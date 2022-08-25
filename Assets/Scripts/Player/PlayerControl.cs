@@ -11,13 +11,14 @@ public class PlayerControl : MonoBehaviour
         Block,
         Die,
     }
+    PlayerIdle idle;
     Vector3 pPos;
     Vector3 dir;
     Rigidbody rigid;
     Collider coll;
     int disX;
-    int disY;
-    float jumpForce;
+    int disZ;
+    public float jumpForce;
     float x;
     float y;
 
@@ -27,10 +28,10 @@ public class PlayerControl : MonoBehaviour
     private void Awake()
     {
         moveDelay = 0f;
-        moveTime = 0.4f;
+        moveTime = 0.5f;
         isMove = false;
         disX = 0;
-        disY = 0;
+        disZ = 0;
         moveDelay = 0f;
         jumpForce = 3f;
     }
@@ -43,36 +44,37 @@ public class PlayerControl : MonoBehaviour
     {
         Action();
     }
+   
     private void Action()
     {
-        Move();
+        if(!isMove)
+            Move();
+        else
+            MoveDelay();
+        pPos = transform.position;
+        transform.position = Vector3.Lerp(pPos, dir, 0.2f);
     }
     private void Move()
     {
-        if (Input.GetKeyDown(KeyCode.W))
-            disY++;
-        if (Input.GetKeyDown(KeyCode.S))
-            disY--;
-        if (Input.GetKeyDown(KeyCode.D))
-            disX++;
-        if (Input.GetKeyDown(KeyCode.A))
-            disX--;
-        dir = new Vector3(disX, 0, disY);
-        pPos = transform.position;
-        transform.position = Vector3.Lerp(pPos, dir, 0.2f);
-        MoveDelay();
+        if (Input.GetKeyDown(KeyCode.W)) { disZ++; isMove = true; }
+        if (Input.GetKeyDown(KeyCode.S)) { disZ--; isMove = true; }
+        if (Input.GetKeyDown(KeyCode.D)) { disX++; isMove = true; }
+        if (Input.GetKeyDown(KeyCode.A)) { disX--; isMove = true; }
+        //MoveJump();
+        dir = new Vector3(disX, dir.y, disZ);
+        
     }
     private void MoveDelay()
     {
-        isMove = true;
-        if (isMove)
-        {
-            moveDelay += Time.deltaTime;
-        }
+        moveDelay += Time.deltaTime;
         if(moveDelay >= moveTime)
         {
             isMove = false;
             moveDelay = 0f;
         }
+    }
+    private void MoveJump()
+    {
+        rigid.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
     }
 }
