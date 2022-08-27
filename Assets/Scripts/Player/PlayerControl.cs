@@ -4,24 +4,21 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    enum PlayerIdle
+    enum PlayerDic
     {
-        Ible,
-        Move,
-        Block,
-        Die,
+        UP,
+        Down,
+        Left,
+        Right,
     }
-    PlayerIdle idle;
-    Vector3 curPos;
-    Vector3 dir;
+    Dictionary<KeyCode, PlayerDic> playerDic;
+    PlayerDic prePlayerDir;
     Rigidbody rigid;
     Collider coll;
-    int disX;
-    int disZ;
+    Vector3 movePos;
     public float jumpForce;
     float x;
     float y;
-
     bool isMove;
     float moveDelay;
     float moveTime;
@@ -30,40 +27,80 @@ public class PlayerControl : MonoBehaviour
         moveDelay = 0f;
         moveTime = 0.2f;
         isMove = false;
-        disX = 0;
-        disZ = 0;
         moveDelay = 0f;
         jumpForce = 3f;
     }
     private void Start()
     {
+        prePlayerDir = PlayerDic.UP;
+        playerDic = new Dictionary<KeyCode, PlayerDic>();
         rigid = GetComponent<Rigidbody>();
         coll = GetComponent<Collider>();
+        PlayerCheak();
     }
     private void Update()
     {
         Action();
     }
-   
+   private void PlayerCheak()
+    {
+        playerDic.Add(KeyCode.W, PlayerDic.UP);
+        playerDic.Add(KeyCode.S, PlayerDic.Down);
+        playerDic.Add(KeyCode.A, PlayerDic.Left);
+        playerDic.Add(KeyCode.D, PlayerDic.Right);
+    }
     private void Action()
     {
-        if(!isMove)
-            Move();
-        else
+        if (Input.anyKeyDown)
+        {
+            foreach(KeyValuePair<KeyCode, PlayerDic> pdic in playerDic)
+            {
+                if (Input.GetKeyDown(pdic.Key) && !isMove)
+                {
+                    Move(pdic.Value);
+                    Debug.Log(pdic.Value);
+                    prePlayerDir = pdic.Value;
+                    DirCheak(pdic.Value);
+                }
+            }
+        }
+        if (isMove)
             MoveDelay();
-        PlayerCameraView();
-        curPos = transform.position;
-        transform.position = Vector3.Lerp(curPos, dir, 0.2f);
+        transform.position = Vector3.Lerp(transform.position, movePos, 0.1f);
     }
-    private void Move()
+    private void DirCheak(PlayerDic dir)
     {
-        if (Input.GetKeyDown(KeyCode.W)) { disZ++; isMove = true; }
-        if (Input.GetKeyDown(KeyCode.S)) { disZ--; isMove = true; }
-        if (Input.GetKeyDown(KeyCode.D)) { disX++; isMove = true; }
-        if (Input.GetKeyDown(KeyCode.A)) { disX--; isMove = true; }
-        //MoveJump();
-        dir = new Vector3(disX, dir.y, disZ);
-        
+        if (dir == PlayerDic.UP)
+            transform.rotation = Quaternion.Euler(0,0,0);
+        if (dir == PlayerDic.Down)
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        if (dir == PlayerDic.Left)
+            transform.rotation = Quaternion.Euler(0, -90, 0);
+        if (dir == PlayerDic.Right)
+            transform.rotation = Quaternion.Euler(0, 90, 0);
+    }
+    private void Move(PlayerDic playerDic)
+    {
+        Vector3 offsetPos = transform.position;
+        switch (playerDic)
+        {
+            case PlayerDic.UP:
+                offsetPos = Vector3.forward; isMove = true;
+                break;
+            case PlayerDic.Down:
+                offsetPos = Vector3.back;    isMove = true;
+                break;
+            case PlayerDic.Left:
+                offsetPos = Vector3.left;    isMove = true;
+                break;
+            case PlayerDic.Right:
+                offsetPos = Vector3.right;   isMove = true;
+                break;
+            default:
+                Debug.Log("Error");
+                break;
+        }
+        movePos = transform.position + offsetPos;
     }
     private void MoveDelay()
     {
@@ -78,8 +115,9 @@ public class PlayerControl : MonoBehaviour
     {
         rigid.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
     }
-    private void PlayerCameraView()
+    private void OnCollisionEnter(Collision collision)
     {
-        Camera.main.transform.SetParent(transform);
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+            collision.gameObject.GetComponent<IDie>().Die();
     }
 }

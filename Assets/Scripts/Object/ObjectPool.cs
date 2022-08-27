@@ -67,9 +67,14 @@ public class ObjectPool : MonoBehaviour
     }
     public GameObject ObjectSet(Vector3 pos , int num)
     {
-        GameObject ob = objectPoolList[num].Dequeue();
+        var ob = objectPoolList[num].Dequeue();
         ob.SetActive(true);
         ob.transform.position = pos;
         return ob;
+    }
+    public void ObjectReturn(int num, GameObject ob)
+    {
+        objectPoolList[num].Enqueue(ob);
+        ob.SetActive(false);
     }
 }

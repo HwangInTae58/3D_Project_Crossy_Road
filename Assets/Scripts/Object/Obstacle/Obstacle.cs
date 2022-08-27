@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class Obstacle : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] protected float moveSpeed;
+    protected float randomMin;
+    protected float randomMax;
+    virtual protected void Move()//여기에 왼쪽을 갈지 오른쪽 갈지 정하자
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        float moveX = moveSpeed * Time.deltaTime;
+        transform.Translate(moveX, 0, 0);
     }
 }

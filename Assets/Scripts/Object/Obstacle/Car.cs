@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Car : MonoBehaviour
+public class Car : Obstacle, IDie
 {
-    [SerializeField] float moveSpeed;
     CarData data;
     private void Start()
     {
-        moveSpeed = Random.RandomRange(2f, 10f);
+        randomMin = 2f;
+        randomMax = 10f;
+        moveSpeed = Random.Range(randomMin, randomMax);
     }
     private void Update()
     {
-        Move();
+        base.Move();
     }
-    private void Move()//여기에 왼쪽을 갈지 오른쪽 갈지 정하자
+    public void Die()
     {
-        float moveX = moveSpeed * Time.deltaTime;
-        transform.Translate(moveX, 0, 0);
+        Debug.Log("차에 치여 사망");
     }
 }
