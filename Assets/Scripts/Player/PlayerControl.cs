@@ -12,7 +12,7 @@ public class PlayerControl : MonoBehaviour
         Die,
     }
     PlayerIdle idle;
-    Vector3 pPos;
+    Vector3 curPos;
     Vector3 dir;
     Rigidbody rigid;
     Collider coll;
@@ -28,7 +28,7 @@ public class PlayerControl : MonoBehaviour
     private void Awake()
     {
         moveDelay = 0f;
-        moveTime = 0.5f;
+        moveTime = 0.2f;
         isMove = false;
         disX = 0;
         disZ = 0;
@@ -51,8 +51,9 @@ public class PlayerControl : MonoBehaviour
             Move();
         else
             MoveDelay();
-        pPos = transform.position;
-        transform.position = Vector3.Lerp(pPos, dir, 0.2f);
+        PlayerCameraView();
+        curPos = transform.position;
+        transform.position = Vector3.Lerp(curPos, dir, 0.2f);
     }
     private void Move()
     {
@@ -76,5 +77,9 @@ public class PlayerControl : MonoBehaviour
     private void MoveJump()
     {
         rigid.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
+    }
+    private void PlayerCameraView()
+    {
+        Camera.main.transform.SetParent(transform);
     }
 }

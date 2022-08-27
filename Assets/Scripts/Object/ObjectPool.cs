@@ -22,8 +22,6 @@ public class ObjectPool : MonoBehaviour
     Transform tfPoolParent; // 풀의 부모를 정해서 그곳에 POOL을 정착
     //리스트에 큐를 담고 큐마다 각자의 오브젝트가 생기도록
     public List<Queue<GameObject>> objectPoolList;
-    
-
     void Awake()
     {
         if (instance == null)
@@ -65,7 +63,13 @@ public class ObjectPool : MonoBehaviour
             objectClone.transform.SetParent(tfPoolParent);
             obQueue.Enqueue(objectClone);
         }
-
         return obQueue;
+    }
+    public GameObject ObjectSet(Vector3 pos , int num)
+    {
+        GameObject ob = objectPoolList[num].Dequeue();
+        ob.SetActive(true);
+        ob.transform.position = pos;
+        return ob;
     }
 }
