@@ -89,7 +89,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4046519687475604595}
   - component: {fileID: 4585395914657839869}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: railRoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}

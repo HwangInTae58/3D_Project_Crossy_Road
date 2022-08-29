@@ -16,19 +16,26 @@ public class PlayerControl : MonoBehaviour
     Rigidbody rigid;
     Collider coll;
     Vector3 movePos;
+    
     public float jumpForce;
-    float x;
-    float y;
+    bool moveCool;
     bool isMove;
-    float moveDelay;
     float moveTime;
+    float moveDelay;
+    float moveCoolTime;
+
+    Log logOb;
+    Transform logCompareObj;
+    Vector3 m_LogOffsetPos = Vector3.zero;
+
     private void Awake()
     {
         moveDelay = 0f;
-        moveTime = 0.2f;
+        moveTime = 0.1f;
         isMove = false;
-        moveDelay = 0f;
-        jumpForce = 3f;
+        moveCoolTime = 0.3f;
+        moveCool = false;
+        jumpForce = 30f;
     }
     private void Start()
     {
@@ -41,6 +48,7 @@ public class PlayerControl : MonoBehaviour
     private void Update()
     {
         Action();
+        UpdateLog();
     }
    private void PlayerCheak()
     {
@@ -55,7 +63,7 @@ public class PlayerControl : MonoBehaviour
         {
             foreach(KeyValuePair<KeyCode, PlayerDic> pdic in playerDic)
             {
-                if (Input.GetKeyDown(pdic.Key) && !isMove)
+                if (Input.GetKeyDown(pdic.Key) && !moveCool)
                 {
                     Move(pdic.Value);
                     Debug.Log(pdic.Value);
@@ -64,9 +72,10 @@ public class PlayerControl : MonoBehaviour
                 }
             }
         }
-        if (isMove)
+        if (moveCool) 
             MoveDelay();
-        transform.position = Vector3.Lerp(transform.position, movePos, 0.1f);
+        if (isMove) 
+            IsMoveTime();
     }
     private void DirCheak(PlayerDic dir)
     {
@@ -85,39 +94,78 @@ public class PlayerControl : MonoBehaviour
         switch (playerDic)
         {
             case PlayerDic.UP:
-                offsetPos = Vector3.forward; isMove = true;
-                break;
-            case PlayerDic.Down:
-                offsetPos = Vector3.back;    isMove = true;
-                break;
-            case PlayerDic.Left:
-                offsetPos = Vector3.left;    isMove = true;
-                break;
-            case PlayerDic.Right:
-                offsetPos = Vector3.right;   isMove = true;
+                offsetPos = Vector3.forward; moveCool = true; isMove = true;
+                break;                                       
+            case PlayerDic.Down:                             
+                offsetPos = Vector3.back;    moveCool = true; isMove = true;
+                break;                                       
+            case PlayerDic.Left:                             
+                offsetPos = Vector3.left;    moveCool = true; isMove = true;
+                break;                                       
+            case PlayerDic.Right:                            
+                offsetPos = Vector3.right;   moveCool = true; isMove = true;
                 break;
             default:
                 Debug.Log("Error");
                 break;
         }
         movePos = transform.position + offsetPos;
+        m_LogOffsetPos += offsetPos;
+    }
+    private void IsMoveTime()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, movePos, 0.1f);
+        if (moveDelay >= moveTime)
+            isMove = false;
     }
     private void MoveDelay()
     {
         moveDelay += Time.deltaTime;
-        if(moveDelay >= moveTime)
+        if (moveDelay >= moveCoolTime)
         {
-            isMove = false;
+            moveCool = false;
             moveDelay = 0f;
         }
     }
-    private void MoveJump()
+    private void Jump()
     {
         rigid.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
+    }
+    private void UpdateLog()
+    {
+        if (logOb == null) { 
+
+            return;
+        }
+        Vector3 actorPos = logOb.transform.position + m_LogOffsetPos;
+        transform.position = actorPos;
     }
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
             collision.gameObject.GetComponent<IDie>().Die();
+    }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Log"))
+        {
+            logOb = other.GetComponent<Log>();
+            if(logOb != null)
+            {
+                logCompareObj = logOb.transform;
+                m_LogOffsetPos = transform.position - logOb.transform.position;
+            }
+            return;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if(logCompareObj == other.transform)
+        {
+            logCompareObj = null;
+            logOb = null;
+            m_LogOffsetPos = Vector3.zero;
+        }
     }
 }
