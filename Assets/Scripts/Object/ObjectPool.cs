@@ -15,7 +15,7 @@ public class ObjectPool : MonoBehaviour
     public static ObjectPool instance;
     //담길 오브젝트를 컴포넌트에 나타나게 하기
     [SerializeField]
-    ObjectInfo[] objectInfos = null;
+    public ObjectInfo[] objectInfos = null;
 
     [Header("오브젝트 풀의 위치")]
     [SerializeField]

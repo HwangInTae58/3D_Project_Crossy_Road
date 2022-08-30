@@ -4,17 +4,34 @@ using UnityEngine;
 
 public class RoadManager : MonoBehaviour
 {
-    public GameObject[] roadPrefab;
-    public GameObject[] obstaclePrefab;
-    Dictionary<GameObject, GameObject> roadInobtacle;
+    public static RoadManager instance;
+    public GameObject[] carPrefab;
+    Transform lastRoad;
+    int roadCount;
+    int ranRoad;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+        ranRoad = Random.Range(0, 3);
+        roadCount = 4;
+    }
     private void Start()
     {
-        for(int i = 0; i < roadPrefab.Length; i++) { 
-        roadInobtacle.Add(roadPrefab[i], obstaclePrefab[i]);
-        }
     }
-    private void RandomRoadCreat()
+    private void RoadCreat()
     {
 
+    }
+    private void RandomRoad()
+    {
+      
     }
 }

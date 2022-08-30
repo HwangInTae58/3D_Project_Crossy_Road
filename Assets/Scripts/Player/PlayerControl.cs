@@ -23,7 +23,7 @@ public class PlayerControl : MonoBehaviour
     float moveTime;
     float moveDelay;
     float moveCoolTime;
-
+    string[] layerName = new string[2];
     Log logOb;
     Transform logCompareObj;
     Vector3 m_LogOffsetPos = Vector3.zero;
@@ -31,15 +31,17 @@ public class PlayerControl : MonoBehaviour
     private void Awake()
     {
         moveDelay = 0f;
-        moveTime = 0.1f;
+        moveTime = 1f;
         isMove = false;
-        moveCoolTime = 0.3f;
+        moveCoolTime = 1.2f;
         moveCool = false;
         jumpForce = 30f;
     }
     private void Start()
     {
         prePlayerDir = PlayerDic.UP;
+        layerName[0] = "Obstacle";
+        layerName[1] = "Log";
         playerDic = new Dictionary<KeyCode, PlayerDic>();
         rigid = GetComponent<Rigidbody>();
         coll = GetComponent<Collider>();
@@ -65,7 +67,7 @@ public class PlayerControl : MonoBehaviour
             {
                 if (Input.GetKeyDown(pdic.Key) && !moveCool)
                 {
-                    Move(pdic.Value);
+                    InputMoveDir(pdic.Value);
                     Debug.Log(pdic.Value);
                     prePlayerDir = pdic.Value;
                     DirCheak(pdic.Value);
@@ -88,7 +90,7 @@ public class PlayerControl : MonoBehaviour
         if (dir == PlayerDic.Right)
             transform.rotation = Quaternion.Euler(0, 90, 0);
     }
-    private void Move(PlayerDic playerDic)
+    private void InputMoveDir(PlayerDic playerDic)
     {
         Vector3 offsetPos = transform.position;
         switch (playerDic)
@@ -114,7 +116,7 @@ public class PlayerControl : MonoBehaviour
     }
     private void IsMoveTime()
     {
-        transform.position = Vector3.MoveTowards(transform.position, movePos, 0.1f);
+        transform.position = Vector3.Slerp(transform.position, movePos, 0.1f);
         if (moveDelay >= moveTime)
             isMove = false;
     }
@@ -127,14 +129,9 @@ public class PlayerControl : MonoBehaviour
             moveDelay = 0f;
         }
     }
-    private void Jump()
-    {
-        rigid.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
-    }
     private void UpdateLog()
     {
         if (logOb == null) { 
-
             return;
         }
         Vector3 actorPos = logOb.transform.position + m_LogOffsetPos;
@@ -142,9 +139,9 @@ public class PlayerControl : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+        if (other.gameObject.layer == LayerMask.NameToLayer(layerName[0]))
             other.gameObject.GetComponent<IDie>().Die();
-        if (other.gameObject.layer == LayerMask.NameToLayer("Log"))
+        if (other.gameObject.layer == LayerMask.NameToLayer(layerName[1]))
         {
             logOb = other.GetComponent<Log>();
             if(logOb != null)
