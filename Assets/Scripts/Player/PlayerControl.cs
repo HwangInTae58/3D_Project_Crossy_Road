@@ -140,14 +140,10 @@ public class PlayerControl : MonoBehaviour
         Vector3 actorPos = logOb.transform.position + m_LogOffsetPos;
         transform.position = actorPos;
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
-            collision.gameObject.GetComponent<IDie>().Die();
-    }
-    
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+            other.gameObject.GetComponent<IDie>().Die();
         if (other.gameObject.layer == LayerMask.NameToLayer("Log"))
         {
             logOb = other.GetComponent<Log>();
