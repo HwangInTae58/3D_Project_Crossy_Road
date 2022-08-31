@@ -16,17 +16,19 @@ public class PlayerControl : MonoBehaviour
     Rigidbody rigid;
     Collider coll;
     Vector3 movePos;
-    
+    Vector3 m_LogOffsetPos;
+    Vector3 offsetPos;
     public float jumpForce;
     bool moveCool;
     bool isMove;
     float moveTime;
     float moveDelay;
     float moveCoolTime;
-    string[] layerName = new string[] { "Obstacle", "Log" };
+    string[] layerName = new string[] { "Obstacle", "Log","StayObj" };
+    int layerCount;
     Log logOb;
     Transform logCompareObj;
-    Vector3 m_LogOffsetPos = Vector3.zero;
+    
 
     private void Awake()
     {
@@ -90,7 +92,8 @@ public class PlayerControl : MonoBehaviour
     }
     private void InputMoveDir(PlayerDic playerDic)
     {
-        Vector3 offsetPos = transform.position;
+        offsetPos = transform.position;
+        
         switch (playerDic)
         {
             case PlayerDic.UP:
@@ -109,11 +112,19 @@ public class PlayerControl : MonoBehaviour
                 Debug.Log("Error");
                 break;
         }
+        RaycastHit hitObj;
+        layerCount = LayerMask.GetMask(layerName[2]);
+        if (Physics.Raycast(transform.position, offsetPos, out hitObj,0.7f, layerCount)){
+            movePos = transform.position;
+        }
+        else { 
         movePos = transform.position + offsetPos;
+        }
         m_LogOffsetPos += offsetPos;
     }
     private void IsMoveTime()
     {
+       
         transform.position = Vector3.Lerp(transform.position, movePos, 0.1f);
         if (moveDelay >= moveTime)
             isMove = false;
