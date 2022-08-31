@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1813969250664202943
+--- !u!1 &1618211002783632190
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8434620712761161678}
-  - component: {fileID: 6251179260103703220}
-  - component: {fileID: 2853671620147222032}
+  - component: {fileID: 2066406495847693051}
+  - component: {fileID: 4906162024301135386}
+  - component: {fileID: 751594323261327578}
   m_Layer: 0
   m_Name: strip_train
   m_TagString: Untagged
@@ -18,35 +18,35 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8434620712761161678
+--- !u!4 &2066406495847693051
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1813969250664202943}
+  m_GameObject: {fileID: 1618211002783632190}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4046519687475604595}
+  m_Father: {fileID: 6891924571370765329}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6251179260103703220
+--- !u!33 &4906162024301135386
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1813969250664202943}
+  m_GameObject: {fileID: 1618211002783632190}
   m_Mesh: {fileID: -8133961754473857565, guid: 8f643ddebbdae904c9c21a82eddb20b8, type: 3}
---- !u!23 &2853671620147222032
+--- !u!23 &751594323261327578
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1813969250664202943}
+  m_GameObject: {fileID: 1618211002783632190}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -79,7 +79,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!1 &3703067871403570889
+--- !u!1 &8358466120883096709
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -87,8 +87,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4046519687475604595}
-  - component: {fileID: 4585395914657839869}
+  - component: {fileID: 6891924571370765329}
+  - component: {fileID: 9027241504365671576}
   m_Layer: 10
   m_Name: railRoad
   m_TagString: Untagged
@@ -96,28 +96,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4046519687475604595
+--- !u!4 &6891924571370765329
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3703067871403570889}
+  m_GameObject: {fileID: 8358466120883096709}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 1}
+  m_LocalPosition: {x: 0, y: -0.37, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 8434620712761161678}
+  - {fileID: 2066406495847693051}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &4585395914657839869
+--- !u!65 &9027241504365671576
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3703067871403570889}
+  m_GameObject: {fileID: 8358466120883096709}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1

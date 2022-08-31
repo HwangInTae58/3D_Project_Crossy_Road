@@ -23,7 +23,7 @@ public class PlayerControl : MonoBehaviour
     float moveTime;
     float moveDelay;
     float moveCoolTime;
-    string[] layerName = new string[2];
+    string[] layerName = new string[] { "Obstacle", "Log" };
     Log logOb;
     Transform logCompareObj;
     Vector3 m_LogOffsetPos = Vector3.zero;
@@ -31,17 +31,15 @@ public class PlayerControl : MonoBehaviour
     private void Awake()
     {
         moveDelay = 0f;
-        moveTime = 1f;
+        moveTime = 0.2f;
         isMove = false;
-        moveCoolTime = 1.2f;
+        moveCoolTime = 0.5f;
         moveCool = false;
         jumpForce = 30f;
     }
     private void Start()
     {
         prePlayerDir = PlayerDic.UP;
-        layerName[0] = "Obstacle";
-        layerName[1] = "Log";
         playerDic = new Dictionary<KeyCode, PlayerDic>();
         rigid = GetComponent<Rigidbody>();
         coll = GetComponent<Collider>();
@@ -116,7 +114,7 @@ public class PlayerControl : MonoBehaviour
     }
     private void IsMoveTime()
     {
-        transform.position = Vector3.Slerp(transform.position, movePos, 0.1f);
+        transform.position = Vector3.Lerp(transform.position, movePos, 0.1f);
         if (moveDelay >= moveTime)
             isMove = false;
     }
