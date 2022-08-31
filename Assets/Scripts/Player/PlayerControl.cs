@@ -12,9 +12,8 @@ public class PlayerControl : MonoBehaviour
         Right,
     }
     Dictionary<KeyCode, PlayerDic> playerDic;
-    PlayerDic prePlayerDir;
-    Rigidbody rigid;
-    Collider coll;
+    Transform logCompareObj;
+    [SerializeField] Transform playerEye;
     Vector3 movePos;
     Vector3 m_LogOffsetPos;
     Vector3 offsetPos;
@@ -27,7 +26,7 @@ public class PlayerControl : MonoBehaviour
     string[] layerName = new string[] { "Obstacle", "Log","StayObj" };
     int layerCount;
     Log logOb;
-    Transform logCompareObj;
+    
     
 
     private void Awake()
@@ -41,10 +40,7 @@ public class PlayerControl : MonoBehaviour
     }
     private void Start()
     {
-        prePlayerDir = PlayerDic.UP;
         playerDic = new Dictionary<KeyCode, PlayerDic>();
-        rigid = GetComponent<Rigidbody>();
-        coll = GetComponent<Collider>();
         PlayerCheak();
     }
     private void Update()
@@ -69,7 +65,6 @@ public class PlayerControl : MonoBehaviour
                 {
                     InputMoveDir(pdic.Value);
                     Debug.Log(pdic.Value);
-                    prePlayerDir = pdic.Value;
                     DirCheak(pdic.Value);
                 }
             }
@@ -114,7 +109,7 @@ public class PlayerControl : MonoBehaviour
         }
         RaycastHit hitObj;
         layerCount = LayerMask.GetMask(layerName[2]);
-        if (Physics.Raycast(transform.position, offsetPos, out hitObj,0.7f, layerCount)){
+        if (Physics.Raycast(playerEye.position, offsetPos, out hitObj,1f, layerCount)){
             movePos = transform.position;
         }
         else { 
