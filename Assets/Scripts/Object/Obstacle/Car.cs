@@ -7,8 +7,6 @@ public class Car : Obstacle, IDie
     CarData data;
     private void Start()
     {
-        randomMin = 2f;
-        randomMax = 10f;
         moveSpeed = Random.Range(randomMin, randomMax);
     }
     private void Update()

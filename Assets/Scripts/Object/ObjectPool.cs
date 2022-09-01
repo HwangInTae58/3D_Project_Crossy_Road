@@ -16,7 +16,7 @@ public class ObjectPool : MonoBehaviour
     //담길 오브젝트를 컴포넌트에 나타나게 하기
     [SerializeField]
     public ObjectInfo[] objectInfos = null;
-
+    int obTypeCount;
     [Header("오브젝트 풀의 위치")]
     [SerializeField]
     Transform tfPoolParent; // 풀의 부모를 정해서 그곳에 POOL을 정착
@@ -64,23 +64,5 @@ public class ObjectPool : MonoBehaviour
             obQueue.Enqueue(objectClone);
         }
         return obQueue;
-    }
-    public void ObjectSet(Vector3 pos , int num)
-    {
-        GameObject ob = objectPoolList[num].Dequeue();
-        if (objectPoolList[num].Count > 0) { 
-            ob.SetActive(true);
-            ob.transform.position = pos;
-        }
-        else
-        {
-            objectPoolList[num].Enqueue(ob);
-            ObjectSet(pos, num);
-        }
-    }
-    public void ObjectReturn(int num, GameObject ob)
-    {
-        objectPoolList[num].Enqueue(ob);
-        ob.SetActive(false);
     }
 }

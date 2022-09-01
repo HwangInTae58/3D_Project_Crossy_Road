@@ -4,11 +4,22 @@ using UnityEngine;
 
 public class RoadManager : MonoBehaviour
 {
+    public static RoadManager instance;
+    
     public List<GameObject> roadPrefabs = new List<GameObject>();
     public Transform roadParent;
     int roadMinPos;
     int roadMaxPos;
     enum RoadType
+    {
+        Grass = 0,
+        Road,
+        River,
+        Rail,
+
+        Max
+    }
+    enum RoadGrop
     {
         Grass,
         Road,
@@ -18,6 +29,14 @@ public class RoadManager : MonoBehaviour
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
         roadMinPos = -8;
         roadMaxPos = 20;
     }              

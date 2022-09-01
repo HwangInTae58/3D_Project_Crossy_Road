@@ -6,8 +6,6 @@ public class Log : Obstacle
 {
     private void Start()
     {
-        randomMin = 1.3f;
-        randomMax = 4f;
         moveSpeed = Random.Range(randomMin, randomMax);
     }
     private void Update()

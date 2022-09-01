@@ -10,9 +10,9 @@ public class StayObSpawn : MonoBehaviour
     int spawnCreateRandom;
     private void Awake()
     {
-        startMinVal = -12;
-        startMaxVal = 12;
-        spawnCreateRandom = 35;
+        startMinVal = -16;
+        startMaxVal = 16;
+        spawnCreateRandom = 25;
     }
     private void Start()
     {
@@ -32,9 +32,17 @@ public class StayObSpawn : MonoBehaviour
         for (int i = startMinVal; i < startMaxVal; i++)
         {
             randomVal = Random.Range(0, 100);
-            if (randomVal < spawnCreateRandom)//랜덤으로 비교하여
+            randomIndex = Random.Range(0, stayObjectList.Count);//참이면 소환물을 랜덤으로 정한 후
+            if (Mathf.Abs(i)>= 9 && Mathf.Abs(i) < 13)
             {
-                randomIndex = Random.Range(0, stayObjectList.Count);//참이면 소환물을 랜덤으로 정한 후
+                spawnOb = Instantiate(stayObjectList[randomIndex].gameObject);//소환
+                offsetPos.Set(i, 0.37f, 0f);
+                spawnOb.SetActive(true);
+                spawnOb.transform.SetParent(this.transform);
+                spawnOb.transform.localPosition = offsetPos;
+            }
+            else if (randomVal < spawnCreateRandom && Mathf.Abs(i) < 9)//랜덤으로 비교하여
+            {
                 spawnOb = Instantiate(stayObjectList[randomIndex].gameObject);//소환
                 offsetPos.Set(i, 0.37f, 0f);
                 spawnOb.SetActive(true);

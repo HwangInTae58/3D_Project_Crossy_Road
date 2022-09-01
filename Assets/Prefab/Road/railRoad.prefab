@@ -27,10 +27,10 @@ Transform:
   m_GameObject: {fileID: 1618211002783632190}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6891924571370765329}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4906162024301135386
 MeshFilter:
@@ -89,6 +89,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6891924571370765329}
   - component: {fileID: 9027241504365671576}
+  - component: {fileID: 5550738647840530823}
   m_Layer: 10
   m_Name: railRoad
   m_TagString: Untagged
@@ -107,6 +108,7 @@ Transform:
   m_LocalPosition: {x: 0, y: -0.37, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 3960412990711370548}
   - {fileID: 2066406495847693051}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -124,3 +126,90 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 25, y: 0.38, z: 1}
   m_Center: {x: 0, y: 0.19, z: 0}
+--- !u!114 &5550738647840530823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8358466120883096709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b06412d5f4525124080f79acfd961be0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &4597958529110873150
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 6891924571370765329}
+    m_Modifications:
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6254924089904767260, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+        type: 3}
+      propertyPath: m_Name
+      value: Train
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab, type: 3}
+--- !u!4 &3960412990711370548 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 664575932258846474, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
+    type: 3}
+  m_PrefabInstance: {fileID: 4597958529110873150}
+  m_PrefabAsset: {fileID: 0}

@@ -119,10 +119,18 @@ public class PlayerControl : MonoBehaviour
     }
     private void IsMoveTime()
     {
-       
-        transform.position = Vector3.Lerp(transform.position, movePos, 0.1f);
-        if (moveDelay >= moveTime)
-            isMove = false;
+
+            if(Vector3.Distance(transform.position, movePos) > 0.1f && isMove) { 
+                transform.position = Vector3.Lerp(transform.position, movePos, 0.1f);
+            }
+            else
+            {
+                transform.position = movePos;
+                isMove = false;
+                
+            }
+       // if (moveDelay >= moveTime)
+            
     }
     private void MoveDelay()
     {
