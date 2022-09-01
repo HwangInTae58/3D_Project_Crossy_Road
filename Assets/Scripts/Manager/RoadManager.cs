@@ -5,11 +5,6 @@ using UnityEngine;
 public class RoadManager : MonoBehaviour
 {
     public static RoadManager instance;
-    
-    public List<GameObject> roadPrefabs = new List<GameObject>();
-    public Transform roadParent;
-    int roadMinPos;
-    int roadMaxPos;
     enum RoadType
     {
         Grass = 0,
@@ -19,14 +14,15 @@ public class RoadManager : MonoBehaviour
 
         Max
     }
-    enum RoadGrop
-    {
-        Grass,
-        Road,
-        River,
-        Rail
-    }
-
+    public List<GameObject> roadPrefabs = new List<GameObject>();
+    [Header("복제용 길")]
+    public Transform roadParent;
+    int roadMinPos;
+    int roadMaxPos;
+    int frontOffsetPosZ = 20;
+    int backOffsetPosZ = 10;
+    
+   
     private void Awake()
     {
         if (instance == null)
@@ -37,41 +33,96 @@ public class RoadManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-        roadMinPos = -8;
+        roadMinPos = -5;
         roadMaxPos = 20;
-    }              
-    private void Start()
+    }
+    private Dictionary<int, Transform> m_LineMapDic = new Dictionary<int, Transform>();
+    private int lastLinePos = 0;
+    
+    public void UpdateGetPlayerPos(int playerPos)
     {
-        for (int i = roadMinPos; i < roadMaxPos; i++) { 
-            RoadCreat(i);
-            Debug.Log("생성");
+        if(roadParent.childCount <= 0)
+        {
+            //처음 라인 세팅
+            int i = 0;
+            for (i = roadMinPos; i < roadMaxPos; i++)
+            {
+                int ranRoad = Random.Range(0, 4);
+                if (i == 0)
+                    continue;
+                else if (i <= 3)
+                    RoadCreate(i, 0);
+                else if(i > 3 && i < roadMaxPos)
+                {
+                    RoadCreate(i, ranRoad);
+                }
+            }
+            lastLinePos = i;
+            Debug.Log(lastLinePos);
         }
+        //새롭게 생성
+        if(lastLinePos < playerPos + frontOffsetPosZ)
+        {
+            int ranRoad = Random.Range(0, 4);
+            int offsetVal = lastLinePos;
+            RoadCreate(offsetVal, ranRoad);
+            offsetVal++;
+            lastLinePos = offsetVal;
+        }
+        //많이 지나가면 지우기
     }
-    private void UpdateRoadCount(int playerPos)
+    #region GroupRoad
+    public int GroupGrass(int playerPos)
     {
+        int ranCount = Random.Range(1, 4);
+        for (int i = 0; i < ranCount; i++)
+        {
+            RoadCreate(playerPos + i, 0);
+        }
+        return ranCount;
     }
-    private void CreateRoadLine(int playerPos, int CreateNum)
+    public int GroupRoad(int playerPos)
     {
-        GameObject roadOb = Instantiate(roadPrefabs[CreateNum]);
-        roadOb.SetActive(true);
+        int ranCount = Random.Range(1, 1);
+        for (int i = 0; i < ranCount; i++)
+        {
+            RoadCreate(playerPos + i, 1);
+        }
+        return ranCount;
+    }
+    public int GroupRiver(int playerPos)
+    {
+        int ranCount = Random.Range(1, 1);
+        for (int i = 0; i < ranCount; i++)
+        {
+            RoadCreate(playerPos + i, 2);
+        }
+        return ranCount;
+    }
+    public int GroupRail(int playerPos)
+    {
+        int ranCount = Random.Range(1, 1);
+        for (int i = 0; i < ranCount; i++)
+        {
+            RoadCreate(playerPos + i, 3);
+        }
+        return ranCount;
+    }
+    #endregion
+    #region CreateRoad
+    public void RoadCreate(int playerPos, int num)
+    {
+        GameObject ob = Instantiate(roadPrefabs[num]);
+        ob.SetActive(true);
         Vector3 offsetPos = roadParent.position;
         offsetPos.z = (float)playerPos;
-        roadOb.transform.SetParent(roadParent);
-        roadOb.transform.position = offsetPos;
-    }
-    private void RoadCreat(int playerPos)
-    {
-        int ranIndex = Random.Range(0, roadPrefabs.Count);
-        int ranAngle = Random.Range(0, 1);
-        Vector3 offsetPos = roadParent.position;
-        if(playerPos != 0) { 
-        GameObject ob = Instantiate(roadPrefabs[ranIndex], roadParent);
-        offsetPos.z = (float)playerPos;
+        ob.transform.SetParent(roadParent);
         ob.transform.position = offsetPos;
+
+        int ranAngle = Random.Range(0, 2);
         if (ranAngle == 1)
             ob.transform.rotation = Quaternion.Euler(0, 180, 0);
-        ob.SetActive(true);
-        }
     }
-    
+
+    #endregion//
 }

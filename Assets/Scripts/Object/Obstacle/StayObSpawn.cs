@@ -12,7 +12,7 @@ public class StayObSpawn : MonoBehaviour
     {
         startMinVal = -16;
         startMaxVal = 16;
-        spawnCreateRandom = 25;
+        spawnCreateRandom = 20;
     }
     private void Start()
     {

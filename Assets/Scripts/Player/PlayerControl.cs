@@ -34,7 +34,7 @@ public class PlayerControl : MonoBehaviour
         moveDelay = 0f;
         moveTime = 0.2f;
         isMove = false;
-        moveCoolTime = 0.5f;
+        moveCoolTime = 0.3f;
         moveCool = false;
         jumpForce = 30f;
     }
@@ -42,6 +42,7 @@ public class PlayerControl : MonoBehaviour
     {
         playerDic = new Dictionary<KeyCode, PlayerDic>();
         PlayerCheak();
+        RoadManager.instance.UpdateGetPlayerPos((int)transform.position.z);
     }
     private void Update()
     {
@@ -120,16 +121,15 @@ public class PlayerControl : MonoBehaviour
     private void IsMoveTime()
     {
 
-            if(Vector3.Distance(transform.position, movePos) > 0.1f && isMove) { 
-                transform.position = Vector3.Lerp(transform.position, movePos, 0.1f);
-            }
-            else
-            {
-                transform.position = movePos;
-                isMove = false;
-                
-            }
-       // if (moveDelay >= moveTime)
+       if(Vector3.Distance(transform.position, movePos) > 0.1f && isMove) { 
+           transform.position = Vector3.Lerp(transform.position, movePos, 0.1f);
+            RoadManager.instance.UpdateGetPlayerPos((int)transform.position.z);
+       }
+       else
+       {
+           transform.position = movePos;
+           isMove = false;
+       }
             
     }
     private void MoveDelay()
