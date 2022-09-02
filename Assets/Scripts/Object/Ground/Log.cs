@@ -4,12 +4,8 @@ using UnityEngine;
 
 public class Log : Obstacle
 {
-    private void Start()
-    {
-        moveSpeed = Random.Range(randomMin, randomMax);
-    }
     private void Update()
     {
-        base.Move();
+        base.Move(SpeedGet());
     }
 }

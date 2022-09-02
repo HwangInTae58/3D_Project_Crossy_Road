@@ -61,7 +61,6 @@ public class RoadManager : MonoBehaviour
                 }
             }
             lastLinePos = i;
-            Debug.Log(lastLinePos);
         }
         //새롭게 생성
         if(lastLinePos < playerPos + frontOffsetPosZ)

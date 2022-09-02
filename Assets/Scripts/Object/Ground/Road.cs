@@ -4,50 +4,84 @@ using UnityEngine;
 
 public class Road : MonoBehaviour, IDie
 {
-    Transform childOb;
+    public GameObject moveObPrefab;
+    public Transform spawnPos;
+    Transform repeatOb;
+    float spawnDelay;
+    float spawnTime;
     private void Start()
     {
         MoveObjectSpeed();
     }
+    private void Update()
+    {
+        if (repeatOb != null)
+            RepeatObject();
+    }
+
+    private void RepeatObject()
+    {
+        if (spawnTime > spawnDelay)
+            spawnDelay += Time.deltaTime;
+        else
+        {
+            SpawnMoveOb(repeatOb.gameObject);
+            spawnDelay = 0;
+        }
+        
+    }
+
     private void MoveObjectSpeed()
     {
         //이걸 전부 길에 따른 자식들을 넣어주고 계속 생성되게 하기
-        if (GetComponentInChildren<Car>() != null)
+        if (moveObPrefab != null)
         {
-            var ob = GetComponentInChildren<Car>();
-            childOb = ob.transform;
-            ob.randomMin = 2f;
-            ob.randomMax = 6f;
-        }
-        else if (GetComponentInChildren<Log>() != null)
-        {
-            var ob = GetComponentInChildren<Log>();
-            childOb = ob.transform;
-            ob.randomMin = 1f;
-            ob.randomMax = 4f;
-        }
-        else if (GetComponentInChildren<Train>() != null)
-        {
-            var ob = GetComponentInChildren<Train>();
-            childOb = ob.transform;
-            ob.randomMin = 20f;
-            ob.randomMax = 20f;
+            if (moveObPrefab.GetComponent<Car>())
+            {
+                spawnTime = Random.Range(2f, 4f);
+                var ob = SpawnMoveOb(moveObPrefab).GetComponent<Car>();
+                ob.randomMin = 2f; ob.randomMax = 8f;
+                ob.SpeedGet();
+                repeatOb = ob.transform;
+                moveObPrefab.gameObject.SetActive(true);
+            }
+            else if (moveObPrefab.GetComponent<Log>())
+            {
+                spawnTime = Random.Range(1f, 2.5f);
+                var ob = SpawnMoveOb(moveObPrefab).GetComponent<Log>();
+                ob.randomMin = 1.5f; ob.randomMax = 4f;
+                ob.SpeedGet();
+                repeatOb = ob.transform;
+                moveObPrefab.gameObject.SetActive(true);
+            }
+            else if (moveObPrefab.GetComponent<Train>())
+            {
+                spawnTime = Random.Range(8f, 12f);
+                var ob = SpawnMoveOb(moveObPrefab).GetComponent<Train>();
+                ob.randomMin = 20f; ob.randomMax = 21f;
+                ob.SpeedGet();
+                repeatOb = ob.transform;
+                moveObPrefab.gameObject.SetActive(true);
+            }
         }
         else
             return;
     }
-    private void SpawnMoveOb(Transform ob)
+    private GameObject SpawnMoveOb(GameObject objec)
     {
-        Vector3 offset = new Vector3(-20, 0, 0);
-        Instantiate(ob);
-        ob.transform.SetParent(this.transform);
-        ob.transform.localPosition = offset;
+        var ob = Instantiate(objec);
+        ob.SetActive(true);
+        ob.transform.position = spawnPos.position;
+        ob.transform.SetParent(transform);
+        ob.transform.eulerAngles = transform.eulerAngles;
+        return ob;
     }
-    public void Die()
+    public void Die(Transform player)
     {
         if (gameObject.layer == LayerMask.NameToLayer("Obstacle"))
         {
             Debug.Log("물에 빠져 사망");
+            //player.gameObject.SetActive(false);
         }
         else
             return;

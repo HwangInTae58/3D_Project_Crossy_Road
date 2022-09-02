@@ -7,9 +7,13 @@ public class Obstacle : MonoBehaviour
     [SerializeField] protected float moveSpeed;
     public float randomMin;
     public float randomMax;
-    virtual protected void Move()//여기에 왼쪽을 갈지 오른쪽 갈지 정하자
+    virtual public float SpeedGet()
     {
-        float moveX = moveSpeed * Time.deltaTime;
+        return moveSpeed = Random.Range(randomMin, randomMax);
+    }
+    virtual protected void Move(float moveX)
+    {
+        moveX = moveSpeed * Time.deltaTime;
         transform.Translate(moveX, 0, 0);
     }
 }

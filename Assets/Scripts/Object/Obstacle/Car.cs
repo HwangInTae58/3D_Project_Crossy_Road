@@ -5,16 +5,13 @@ using UnityEngine;
 public class Car : Obstacle, IDie
 {
     CarData data;
-    private void Start()
-    {
-        moveSpeed = Random.Range(randomMin, randomMax);
-    }
     private void Update()
     {
-        base.Move();
+        base.Move(SpeedGet());
     }
-    public void Die()
+    public void Die(Transform player)
     {
         Debug.Log("차에 치여 사망");
+        player.transform.localScale = new Vector3(0.7f, 0.1f, 0.7f); 
     }
 }

@@ -20,7 +20,7 @@ public class PlayerControl : MonoBehaviour, IDie
     public float jumpForce;
     bool moveCool;
     bool isMove;
-    float moveTime;
+    bool isDie;
     float moveDelay;
     float moveCoolTime;
     string[] layerName = new string[] { "Obstacle", "Log","StayObj" };
@@ -33,9 +33,9 @@ public class PlayerControl : MonoBehaviour, IDie
     private void Awake()
     {
         moveDelay = 0f;
-        moveTime = 0.2f;
         isMove = false;
-        moveCoolTime = 0.3f;
+        isDie = false;
+        moveCoolTime = 0.22f;
         moveCool = false;
         jumpForce = 30f;
         backMove = 0;
@@ -60,7 +60,7 @@ public class PlayerControl : MonoBehaviour, IDie
     }
     private void Action()
     {
-        if (Input.anyKeyDown)
+        if (Input.anyKeyDown && !isDie)
         {
             foreach(KeyValuePair<KeyCode, PlayerDic> pdic in playerDic)
             {
@@ -117,8 +117,10 @@ public class PlayerControl : MonoBehaviour, IDie
         else 
         movePos = transform.position + offsetPos;
         m_LogOffsetPos += offsetPos;
-        if (backMove >= 5)
-            Die();
+        if (backMove >= 5) {
+            isDie = true;
+            Die(transform);
+        }
     }
     private void IsMoveTime()
     {
@@ -129,7 +131,6 @@ public class PlayerControl : MonoBehaviour, IDie
        }
        else
        {
-            
            transform.position = movePos;
            isMove = false;
        }
@@ -154,8 +155,10 @@ public class PlayerControl : MonoBehaviour, IDie
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer(layerName[0]))
-            other.gameObject.GetComponent<IDie>().Die();
+        if (other.gameObject.layer == LayerMask.NameToLayer(layerName[0])) { 
+            other.gameObject.GetComponent<IDie>().Die(transform);
+            isDie = true;
+        }
         if (other.gameObject.layer == LayerMask.NameToLayer(layerName[1]))
         {
             logOb = other.GetComponent<Log>();
@@ -176,8 +179,7 @@ public class PlayerControl : MonoBehaviour, IDie
             m_LogOffsetPos = Vector3.zero;
         }
     }
-
-    public void Die()
+    public void Die(Transform player)
     {
         Debug.Log("너무 뒤로 가서 사망");
     }

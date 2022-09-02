@@ -139,6 +139,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 0
+  randomMin: 0
+  randomMax: 0
 --- !u!65 &1467127864485198417
 BoxCollider:
   m_ObjectHideFlags: 0
