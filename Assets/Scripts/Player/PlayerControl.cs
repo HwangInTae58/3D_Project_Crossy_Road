@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerControl : MonoBehaviour
+public class PlayerControl : MonoBehaviour, IDie
 {
     enum PlayerDic
     {
@@ -25,6 +25,7 @@ public class PlayerControl : MonoBehaviour
     float moveCoolTime;
     string[] layerName = new string[] { "Obstacle", "Log","StayObj" };
     int layerCount;
+    int backMove;
     Log logOb;
     
     
@@ -37,6 +38,7 @@ public class PlayerControl : MonoBehaviour
         moveCoolTime = 0.3f;
         moveCool = false;
         jumpForce = 30f;
+        backMove = 0;
     }
     private void Start()
     {
@@ -78,9 +80,9 @@ public class PlayerControl : MonoBehaviour
     private void DirCheak(PlayerDic dir)
     {
         if (dir == PlayerDic.UP)
-            transform.rotation = Quaternion.Euler(0,0,0);
+            transform.rotation = Quaternion.Euler(0,0,0);      
         if (dir == PlayerDic.Down)
-            transform.rotation = Quaternion.Euler(0, 180, 0);
+            transform.rotation = Quaternion.Euler(0, 180, 0);  
         if (dir == PlayerDic.Left)
             transform.rotation = Quaternion.Euler(0, -90, 0);
         if (dir == PlayerDic.Right)
@@ -93,10 +95,10 @@ public class PlayerControl : MonoBehaviour
         switch (playerDic)
         {
             case PlayerDic.UP:
-                offsetPos = Vector3.forward; moveCool = true; isMove = true;
-                break;                                       
+                offsetPos = Vector3.forward; moveCool = true; isMove = true; backMove = 0;
+                break;                                                      
             case PlayerDic.Down:                             
-                offsetPos = Vector3.back;    moveCool = true; isMove = true;
+                offsetPos = Vector3.back;    moveCool = true; isMove = true; backMove += 1; 
                 break;                                       
             case PlayerDic.Left:                             
                 offsetPos = Vector3.left;    moveCool = true; isMove = true;
@@ -110,23 +112,24 @@ public class PlayerControl : MonoBehaviour
         }
         RaycastHit hitObj;
         layerCount = LayerMask.GetMask(layerName[2]);
-        if (Physics.Raycast(playerEye.position, offsetPos, out hitObj,1f, layerCount)){
+        if (Physics.Raycast(playerEye.position, offsetPos, out hitObj,1f, layerCount))
             movePos = transform.position;
-        }
-        else { 
+        else 
         movePos = transform.position + offsetPos;
-        }
         m_LogOffsetPos += offsetPos;
+        if (backMove >= 5)
+            Die();
     }
     private void IsMoveTime()
     {
 
        if(Vector3.Distance(transform.position, movePos) > 0.1f && isMove) { 
-           transform.position = Vector3.Lerp(transform.position, movePos, 0.1f);
-            RoadManager.instance.UpdateGetPlayerPos((int)transform.position.z);
+           transform.position = Vector3.Lerp(transform.position, movePos, 0.2f);
+            RoadManager.instance.UpdateGetPlayerPos((int)movePos.z);
        }
        else
        {
+            
            transform.position = movePos;
            isMove = false;
        }
@@ -172,5 +175,10 @@ public class PlayerControl : MonoBehaviour
             logOb = null;
             m_LogOffsetPos = Vector3.zero;
         }
+    }
+
+    public void Die()
+    {
+        Debug.Log("너무 뒤로 가서 사망");
     }
 }
