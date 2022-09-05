@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerControl : MonoBehaviour, IDie
+public class PlayerControl : MonoBehaviour
 {
     enum PlayerDic
     {
@@ -11,6 +12,7 @@ public class PlayerControl : MonoBehaviour, IDie
         Left,
         Right,
     }
+    public GameObject pig;
     Dictionary<KeyCode, PlayerDic> playerDic;
     Transform logCompareObj;
     [SerializeField] Transform playerEye;
@@ -21,30 +23,33 @@ public class PlayerControl : MonoBehaviour, IDie
     bool moveCool;
     bool isMove;
     bool isDie;
+    bool isRiderLog;
     float moveDelay;
     float moveCoolTime;
     string[] layerName = new string[] { "Obstacle", "Log","StayObj" };
     int layerCount;
     int backMove;
+    int score;
     Log logOb;
-    
-    
+
 
     private void Awake()
     {
         moveDelay = 0f;
         isMove = false;
         isDie = false;
-        moveCoolTime = 0.22f;
+        isRiderLog = false;
+        moveCoolTime = 0.25f;
         moveCool = false;
         jumpForce = 30f;
         backMove = 0;
+        score = 0;
     }
     private void Start()
     {
+        RoadManager.instance.UpdateGetPlayerPos((int)transform.position.z);
         playerDic = new Dictionary<KeyCode, PlayerDic>();
         PlayerCheak();
-        RoadManager.instance.UpdateGetPlayerPos((int)transform.position.z);
     }
     private void Update()
     {
@@ -76,13 +81,15 @@ public class PlayerControl : MonoBehaviour, IDie
             MoveDelay();
         if (isMove) 
             IsMoveTime();
+        if(isDie)
+            GameManager.instance.GameOver(isDie);
     }
     private void DirCheak(PlayerDic dir)
     {
         if (dir == PlayerDic.UP)
-            transform.rotation = Quaternion.Euler(0,0,0);      
+            transform.rotation = Quaternion.Euler(0,0,0); 
         if (dir == PlayerDic.Down)
-            transform.rotation = Quaternion.Euler(0, 180, 0);  
+            transform.rotation = Quaternion.Euler(0, 180, 0); 
         if (dir == PlayerDic.Left)
             transform.rotation = Quaternion.Euler(0, -90, 0);
         if (dir == PlayerDic.Right)
@@ -91,14 +98,19 @@ public class PlayerControl : MonoBehaviour, IDie
     private void InputMoveDir(PlayerDic playerDic)
     {
         offsetPos = transform.position;
-        
+        RaycastHit hitObj;
+        layerCount = LayerMask.GetMask(layerName[2]);
         switch (playerDic)
         {
             case PlayerDic.UP:
-                offsetPos = Vector3.forward; moveCool = true; isMove = true; backMove = 0;
+                offsetPos = Vector3.forward; moveCool = true; isMove = true; backMove -= 1; 
+                if(!Physics.Raycast(playerEye.position, offsetPos, out hitObj, 1f, layerCount)){ 
+                score++;
+                GameManager.instance.UpScore(score);
+                }
                 break;                                                      
             case PlayerDic.Down:                             
-                offsetPos = Vector3.back;    moveCool = true; isMove = true; backMove += 1; 
+                offsetPos = Vector3.back;    moveCool = true; isMove = true; backMove += 2; score--;
                 break;                                       
             case PlayerDic.Left:                             
                 offsetPos = Vector3.left;    moveCool = true; isMove = true;
@@ -110,23 +122,18 @@ public class PlayerControl : MonoBehaviour, IDie
                 Debug.Log("Error");
                 break;
         }
-        RaycastHit hitObj;
-        layerCount = LayerMask.GetMask(layerName[2]);
-        if (Physics.Raycast(playerEye.position, offsetPos, out hitObj,1f, layerCount))
+        if (Physics.Raycast(playerEye.position, offsetPos, out hitObj, 1f , layerCount))
             movePos = transform.position;
         else 
         movePos = transform.position + offsetPos;
-        m_LogOffsetPos += offsetPos;
-        if (backMove >= 5) {
-            isDie = true;
+        if (backMove >= 5 ^ Mathf.Abs(transform.position.x) > 10)
             Die(transform);
-        }
     }
     private void IsMoveTime()
     {
 
-       if(Vector3.Distance(transform.position, movePos) > 0.1f && isMove) { 
-           transform.position = Vector3.Lerp(transform.position, movePos, 0.2f);
+       if(Vector3.Distance(transform.position, movePos) > 0.1f && isMove) {
+            MySLerp(transform.position, movePos);
             RoadManager.instance.UpdateGetPlayerPos((int)movePos.z);
        }
        else
@@ -151,7 +158,17 @@ public class PlayerControl : MonoBehaviour, IDie
             return;
         }
         Vector3 actorPos = logOb.transform.position + m_LogOffsetPos;
-        transform.position = actorPos;
+        if (!Input.anyKey)
+            transform.position = actorPos;
+        else
+        {
+            foreach (KeyValuePair<KeyCode, PlayerDic> pdic in playerDic)
+            {
+                if (Input.GetKeyDown(pdic.Key) && !moveCool && isRiderLog)
+                    MySLerp(transform.position, movePos);
+            }
+        }
+           
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -164,6 +181,7 @@ public class PlayerControl : MonoBehaviour, IDie
             logOb = other.GetComponent<Log>();
             if(logOb != null)
             {
+                isRiderLog = true;
                 logCompareObj = logOb.transform;
                 m_LogOffsetPos = transform.position - logOb.transform.position;
             }
@@ -174,6 +192,7 @@ public class PlayerControl : MonoBehaviour, IDie
     {
         if(logCompareObj == other.transform)
         {
+            isRiderLog = false;
             logCompareObj = null;
             logOb = null;
             m_LogOffsetPos = Vector3.zero;
@@ -182,5 +201,18 @@ public class PlayerControl : MonoBehaviour, IDie
     public void Die(Transform player)
     {
         Debug.Log("너무 뒤로 가서 사망");
+        isDie = true;
+        var ob = Instantiate(pig);
+        ob.SetActive(true);
+        ob.transform.position = new Vector3(movePos.x, 10, movePos.z);
+    }
+    private void MySLerp(Vector3 start, Vector3 end)// 포물선 이동 코드 이거 이해하기
+    {
+        Vector3 center = (start + end) * 0.5f;
+        center -= new Vector3(0, 0.4f, 0);
+        Vector3 riseRelCenter = start - center;
+        Vector3 setRelCenter = end - center;
+        transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, 0.05f);
+        transform.position += center;
     }
 }

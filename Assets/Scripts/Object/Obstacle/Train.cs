@@ -8,10 +8,6 @@ public class Train : Obstacle, IDie
     {
         base.Move(SpeedGet());
     }
-    private void Move()
-    {
-
-    }
     public void Die(Transform player)
     {
         Debug.Log("기차에 치여 사망");

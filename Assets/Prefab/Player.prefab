@@ -76,6 +76,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34e659e243c31034f93fdf32918a38b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pig: {fileID: 6086049724777336022, guid: 2e0e89145d9f983478fb35adfcaab643, type: 3}
   playerEye: {fileID: 21567908062467634}
   jumpForce: 0
 --- !u!1 &4734122633304842204

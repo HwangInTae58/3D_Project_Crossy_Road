@@ -170,4 +170,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveObPrefab: {fileID: 6254924089904767260, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab,
     type: 3}
+  trainLight:
+  - {fileID: 9162042921362779600, guid: 6fe80703d1289e14f9de492b6101ad5e, type: 3}
+  - {fileID: 2706668560180529447, guid: a94bf6ac689586f4e9485ae499daf33b, type: 3}
+  - {fileID: 1412072773120229013, guid: 76583e92cc505f943960fac37348d858, type: 3}
   spawnPos: {fileID: 1423788303444586268}

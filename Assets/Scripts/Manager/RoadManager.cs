@@ -15,7 +15,7 @@ public class RoadManager : MonoBehaviour
     private Dictionary<int, Transform> roadMapDic = new Dictionary<int, Transform>();
     RoadControl control;
     public Transform roadParent;
-    int roadMinPos;
+    public int roadMinPos;
     int roadMaxPos;
     int frontOffsetPosZ;
     int backOffsetPosZ;
@@ -39,7 +39,7 @@ public class RoadManager : MonoBehaviour
         backOffsetPosZ = 30;
         deleteRoad = 10;
     }
-    private int lastLinePos = 0;
+    public int lastLinePos = 0;
     
     public void UpdateGetPlayerPos(int playerPos)
     {
@@ -57,7 +57,26 @@ public class RoadManager : MonoBehaviour
                     RoadCreate(i, 0);
                 else if(i > 3 && i < roadMaxPos)
                 {
-                    RoadCreate(i, ranRoad);
+                    if (control == RoadControl.None)
+                        control = RoadControl.Road1;
+                    if (control == RoadControl.Road1)
+                    {
+                        int random = Random.Range(0, 4);
+                        if (random <= 2)
+                            RoadCreate(i, 0);
+                        if (random == 3)
+                            RoadCreate(i,3);
+                        control = RoadControl.Road2;
+                    }
+                    else if (control == RoadControl.Road2)
+                    {
+                        int random = Random.Range(0, 3);
+                        if (random == 2)
+                            RoadCreate(i,2);
+                        if (random <= 1)
+                            RoadCreate(i,1);
+                        control = RoadControl.Road1;
+                    }
                 }
             }
             lastLinePos = i;
@@ -66,8 +85,6 @@ public class RoadManager : MonoBehaviour
         if(lastLinePos < playerPos + frontOffsetPosZ)
         {
             int offsetVal = lastLinePos;
-            if(control == RoadControl.None)
-                control = RoadControl.Road1;
             if(control == RoadControl.Road1) {
                 int random = Random.Range(0, 4);
                 if (random <= 2)
@@ -153,7 +170,7 @@ public class RoadManager : MonoBehaviour
     #region CreateRoad
     public void RoadCreate(int playerPos, int num)
     {
-        GameObject ob = Instantiate(roadPrefabs[num]);
+        var ob = ObjectPool.instance.objectPoolList[num].Dequeue();
         ob.SetActive(true);
         Vector3 offsetPos = roadParent.position;
         offsetPos.z = (float)playerPos;
@@ -165,5 +182,5 @@ public class RoadManager : MonoBehaviour
             ob.transform.rotation = Quaternion.Euler(0, 180, 0);
     }
 
-    #endregion//
+    #endregion
 }
