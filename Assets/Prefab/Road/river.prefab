@@ -46,7 +46,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 25, y: 0.15, z: 1}
+  m_Size: {x: 40, y: 0.15, z: 1}
   m_Center: {x: 0, y: 0.06, z: 0}
 --- !u!65 &8626287194144196502
 BoxCollider:
@@ -59,7 +59,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 25, y: 0.15, z: 1}
+  m_Size: {x: 40, y: 0.15, z: 1}
   m_Center: {x: 0, y: 0.06, z: 0}
 --- !u!114 &-4498737972818269805
 MonoBehaviour:
@@ -75,6 +75,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveObPrefab: {fileID: 6410981609836450249, guid: 138995f7d0ac14c4bb8854617454c027,
     type: 3}
+  trainLight:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   spawnPos: {fileID: 5804690304801027288}
 --- !u!1 &1758125125608294939
 GameObject:

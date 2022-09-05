@@ -8,6 +8,7 @@ public class Car : Obstacle, IDie
     private void Update()
     {
         base.Move(SpeedGet());
+        base.DestroyObject(18f);
     }
     public void Die(Transform player)
     {

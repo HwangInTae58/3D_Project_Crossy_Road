@@ -33,7 +33,7 @@ public class StayObSpawn : MonoBehaviour
         {
             randomVal = Random.Range(0, 100);
             randomIndex = Random.Range(0, stayObjectList.Count);//참이면 소환물을 랜덤으로 정한 후
-            if (Mathf.Abs(i)>= 9 && Mathf.Abs(i) < 13)
+            if (Mathf.Abs(i)>= 9 && Mathf.Abs(i) < 30)
             {
                 spawnOb = Instantiate(stayObjectList[randomIndex].gameObject);//소환
                 offsetPos.Set(i, 0.37f, 0f);

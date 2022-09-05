@@ -11,11 +11,12 @@ public class RoadManager : MonoBehaviour
         Road2,
         None
     }
-    public List<GameObject> roadPrefabs = new List<GameObject>();
+    public GameObject[] roadPrefabs;
     private Dictionary<int, Transform> roadMapDic = new Dictionary<int, Transform>();
     RoadControl control;
     public Transform roadParent;
     public int roadMinPos;
+    int[] roadNumver;
     int roadMaxPos;
     int frontOffsetPosZ;
     int backOffsetPosZ;
@@ -40,10 +41,9 @@ public class RoadManager : MonoBehaviour
         deleteRoad = 10;
     }
     public int lastLinePos = 0;
-    
     public void UpdateGetPlayerPos(int playerPos)
     {
-        if(roadParent.childCount <= 0)
+        if(roadMapDic.Count <= 0)
         {
             //처음 라인 세팅
             int i = 0;
@@ -120,8 +120,8 @@ public class RoadManager : MonoBehaviour
     {
         if (roadMapDic.ContainsKey(playerPos))
         {
-            Transform ob = roadMapDic[playerPos];
-            Destroy(ob.gameObject);
+            Transform roadTrans = roadMapDic[playerPos];
+            Destroy(roadTrans.gameObject);
             roadMapDic.Remove(playerPos);
         }
         else 
@@ -170,7 +170,7 @@ public class RoadManager : MonoBehaviour
     #region CreateRoad
     public void RoadCreate(int playerPos, int num)
     {
-        var ob = ObjectPool.instance.objectPoolList[num].Dequeue();
+        GameObject ob = Instantiate(roadPrefabs[num]);
         ob.SetActive(true);
         Vector3 offsetPos = roadParent.position;
         offsetPos.z = (float)playerPos;

@@ -15,5 +15,16 @@ public class Obstacle : MonoBehaviour
     {
         moveX = moveSpeed * Time.deltaTime;
         transform.Translate(moveX, 0, 0);
+
+    }
+    virtual protected void DestroyObject(float x)
+    {
+        if (transform.localPosition.x >= x)
+        {
+            gameObject.SetActive(false);
+            Debug.Log("tkw");
+        }
+        else
+            gameObject.SetActive(true);
     }
 }

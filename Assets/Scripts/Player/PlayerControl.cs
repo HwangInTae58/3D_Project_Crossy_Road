@@ -126,7 +126,7 @@ public class PlayerControl : MonoBehaviour
             movePos = transform.position;
         else 
         movePos = transform.position + offsetPos;
-        if (backMove >= 5 ^ Mathf.Abs(transform.position.x) > 10)
+        if (backMove >= 5)
             Die(transform);
     }
     private void IsMoveTime()

@@ -31,7 +31,6 @@ public class Road : MonoBehaviour, IDie
         if (repeatOb != null)
             RepeatObject();
     }
-
     private void RepeatObject()
     {
         if (spawnTime > spawnDelay) { 
