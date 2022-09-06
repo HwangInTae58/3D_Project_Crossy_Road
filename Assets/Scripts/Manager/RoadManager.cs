@@ -11,19 +11,25 @@ public class RoadManager : MonoBehaviour
         Road2,
         None
     }
-    public GameObject[] roadPrefabs;
+    Queue<GameObject> queGrassRoad;
+    Queue<GameObject> queNormalRoad;
+    Queue<GameObject> queRiverRoad;
+    Queue<GameObject> queRailRoad;
+    public GameObject grassPrefabs;
+    public GameObject roadPrefabs;
+    public GameObject riverPrefabs;
+    public GameObject railPrefabs;
+
     private Dictionary<int, Transform> roadMapDic = new Dictionary<int, Transform>();
     RoadControl control;
     public Transform roadParent;
     public int roadMinPos;
-    int[] roadNumver;
+    public int lastLinePos = 0;
     int roadMaxPos;
     int frontOffsetPosZ;
     int backOffsetPosZ;
     int minPosZ;
     int deleteRoad;
-    
-   
     private void Awake()
     {
         if (instance == null)
@@ -40,41 +46,131 @@ public class RoadManager : MonoBehaviour
         backOffsetPosZ = 30;
         deleteRoad = 10;
     }
-    public int lastLinePos = 0;
+    private void SetObject(int playerPos, int num)
+    {
+        Vector3 offsetPos = roadParent.position;
+        offsetPos.z = (float)playerPos;
+        int ranAngle = Random.Range(0, 2);
+        GameObject ob = null;
+        switch (num)
+        {
+            case 0:
+                if (ObjectPool.instance.prefabType[0].Count > 0)
+                {
+                    ob = ObjectPool.instance.prefabType[0].Dequeue();
+                    ob.transform.position = offsetPos;
+                    ob.SetActive(true);
+                }
+                else
+                {
+                    ObjectPool.instance.ListAdd(0, grassPrefabs,1);
+                    SetObject(playerPos, 0);
+                }
+            break;
+            case 1:
+                if (ObjectPool.instance.prefabType[1].Count > 0)
+                {
+                    ob = ObjectPool.instance.prefabType[1].Dequeue();
+                    ob.transform.position = offsetPos;
+                    ob.SetActive(true);
+                }
+                else
+                {
+                    ObjectPool.instance.ListAdd(1, roadPrefabs,1);
+                    SetObject(playerPos, 1);
+                }
+                break;
+            case 2:
+                if (ObjectPool.instance.prefabType[2].Count > 0)
+                {
+                    ob = ObjectPool.instance.prefabType[2].Dequeue();
+                    ob.transform.position = offsetPos;
+                    ob.SetActive(true);
+                }
+                else
+                {
+                    ObjectPool.instance.ListAdd(2, riverPrefabs,1);
+                    SetObject(playerPos, 2);
+                }
+                break;
+            case 3:
+                if (ObjectPool.instance.prefabType[3].Count > 0)
+                {
+                    ob = ObjectPool.instance.prefabType[3].Dequeue();
+                    ob.transform.position = offsetPos;
+                    ob.SetActive(true);
+                }
+                else
+                {
+                    ObjectPool.instance.ListAdd(3, railPrefabs,1);
+                    SetObject(playerPos, 3);
+                }
+                break;
+        }
+        if(ob != null) { 
+        roadMapDic.Add(playerPos, ob.transform);
+        if (ranAngle == 1)
+            ob.transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+    }
+    private void RemoveRoad(int playerPos,int count)
+    {
+        if (roadMapDic.ContainsKey(playerPos))
+        {
+            Transform roadTrans = roadMapDic[playerPos];
+            GetObject(roadTrans.gameObject, count);
+            roadMapDic.Remove(playerPos);
+        }
+        else
+        {
+            Debug.Log("ERROR");
+        }
+    }
+    private void GetObject(GameObject objec, int count)
+    {
+        if(objec == grassPrefabs) 
+            ObjectPool.instance.ListAdd(0, objec, count);
+        if (objec == roadPrefabs)
+            ObjectPool.instance.ListAdd(1, objec, count);
+        if(objec == riverPrefabs)
+            ObjectPool.instance.ListAdd(2, objec, count);
+        if(objec == railPrefabs)
+            ObjectPool.instance.ListAdd(3, objec, count);
+    }
+
     public void UpdateGetPlayerPos(int playerPos)
     {
-        if(roadMapDic.Count <= 0)
+        if (roadMapDic.Count <= 0)
         {
             //처음 라인 세팅
             int i = 0;
             minPosZ = roadMinPos;
             for (i = roadMinPos; i < roadMaxPos; i++)
             {
-                int ranRoad = Random.Range(0, 4);
                 if (i == 0)
                     continue;
                 else if (i <= 3)
-                    RoadCreate(i, 0);
+                    SetObject(i, 0);
                 else if(i > 3 && i < roadMaxPos)
                 {
                     if (control == RoadControl.None)
                         control = RoadControl.Road1;
                     if (control == RoadControl.Road1)
                     {
-                        int random = Random.Range(0, 4);
-                        if (random <= 2)
-                            RoadCreate(i, 0);
-                        if (random == 3)
-                            RoadCreate(i,3);
+                        int random = Random.Range(0, 3);
+                        if (random <= 1)
+                            SetObject(i, 0);
+                        if (random == 2)
+                            SetObject(i,3);
                         control = RoadControl.Road2;
                     }
                     else if (control == RoadControl.Road2)
                     {
                         int random = Random.Range(0, 3);
                         if (random == 2)
-                            RoadCreate(i,2);
+                            SetObject(i,2);
                         if (random <= 1)
-                            RoadCreate(i,1);
+                            SetObject(i,1);
                         control = RoadControl.Road1;
                     }
                 }
@@ -111,31 +207,19 @@ public class RoadManager : MonoBehaviour
             int count = minPosZ + deleteRoad;
             for (int i = minPosZ; i < count; i++)
             {
-                RemoveRoad(i);
+                RemoveRoad(i, count);
             }
             minPosZ += deleteRoad;
         }
     }
-    private void RemoveRoad(int playerPos)
-    {
-        if (roadMapDic.ContainsKey(playerPos))
-        {
-            Transform roadTrans = roadMapDic[playerPos];
-            Destroy(roadTrans.gameObject);
-            roadMapDic.Remove(playerPos);
-        }
-        else 
-        {
-            Debug.Log("ERROR");
-        }
-    }
+
     #region GroupRoad
     public int GroupGrass(int playerPos)
     {
         int ranCount = Random.Range(0,6);
         for (int i = 0; i < ranCount; ++i)
         {
-            RoadCreate(playerPos + i, 0);
+            SetObject(playerPos + i, 0);
         }
         return ranCount;
     }
@@ -144,7 +228,7 @@ public class RoadManager : MonoBehaviour
         int ranCount = Random.Range(0,4);
         for (int i = 0; i < ranCount; i++)
         {
-            RoadCreate(playerPos + i, 1);
+            SetObject(playerPos + i, 1);
         }
         return ranCount;
     }
@@ -153,7 +237,7 @@ public class RoadManager : MonoBehaviour
         int ranCount = Random.Range(0,3);
         for (int i = 0; i < ranCount; i++)
         {
-            RoadCreate(playerPos + i, 2);
+            SetObject(playerPos + i, 2);
         }
         return ranCount;
     }
@@ -162,25 +246,9 @@ public class RoadManager : MonoBehaviour
         int ranCount = Random.Range(0,2);
         for (int i = 0; i < ranCount; i++)
         {
-            RoadCreate(playerPos + i, 3);
+            SetObject(playerPos + i, 3);
         }
         return ranCount;
     }
-    #endregion
-    #region CreateRoad
-    public void RoadCreate(int playerPos, int num)
-    {
-        GameObject ob = Instantiate(roadPrefabs[num]);
-        ob.SetActive(true);
-        Vector3 offsetPos = roadParent.position;
-        offsetPos.z = (float)playerPos;
-        ob.transform.SetParent(roadParent);
-        ob.transform.position = offsetPos;
-        roadMapDic.Add(playerPos, ob.transform);
-        int ranAngle = Random.Range(0, 2);
-        if (ranAngle == 1)
-            ob.transform.rotation = Quaternion.Euler(0, 180, 0);
-    }
-
     #endregion
 }

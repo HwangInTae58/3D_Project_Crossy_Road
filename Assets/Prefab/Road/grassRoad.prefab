@@ -90,7 +90,6 @@ GameObject:
   - component: {fileID: 5233945143905752688}
   - component: {fileID: 1235957749261771111}
   - component: {fileID: 3559019873624862029}
-  - component: {fileID: -8067637817867376080}
   m_Layer: 10
   m_Name: grassRoad
   m_TagString: Untagged
@@ -105,8 +104,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2149956696365319536}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.37, z: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  m_LocalPosition: {x: 0, y: -0.37, z: 40}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1910750725604633351}
@@ -138,19 +137,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f384519f8f2583a4d971dd6e1152dbe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stayObjectList:
-  - {fileID: 3702285615618666121, guid: 6dc6442e27e9ac549bf464911f8b227d, type: 3}
-  - {fileID: 4522738035679480266, guid: 3138c9ced921e654e80e3e670d2c2131, type: 3}
-  - {fileID: 3307771377729372155, guid: 977d7ed7e8077fe4aa0c7188e7a00833, type: 3}
---- !u!114 &-8067637817867376080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2149956696365319536}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b06412d5f4525124080f79acfd961be0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  rockPrefab: {fileID: 3702285615618666121, guid: 6dc6442e27e9ac549bf464911f8b227d,
+    type: 3}
+  treePrefab: {fileID: 3307771377729372155, guid: 977d7ed7e8077fe4aa0c7188e7a00833,
+    type: 3}
+  otherTreeprefab: {fileID: 4522738035679480266, guid: 3138c9ced921e654e80e3e670d2c2131,
+    type: 3}

@@ -12,35 +12,92 @@ public class Road : MonoBehaviour, IDie
         Rail
     }
     RoadType roadType;
-    public GameObject moveObPrefab;
+
+    Queue<GameObject> queObjectPool;
+    public GameObject moveObjectPrefab;
+    List<Transform> repeatOb;
+
     public GameObject[] trainLight = new GameObject[3];
     public Transform spawnPos;
-    Transform repeatOb;
+    int listCount = 0;
+    int listForward = 0;
+    float moveSpeed;
     float spawnDelay;
     float spawnTime;
-
-    bool trinSpawn;
     float trainDelay;
     float trainOn;
+    bool trinSpawn;
     private void Start()
     {
+        
         MoveObjectSpeed();
     }
     private void Update()
     {
         if (repeatOb != null)
             RepeatObject();
+        if(repeatOb[listForward].localPosition.x >= 20)
+        {
+            GetObjectPool(repeatOb[listForward].gameObject);
+        }
     }
+    private void InitQueObject(int count)
+    {
+        queObjectPool = new Queue<GameObject>();
+        for (int i = 0; i < count; i++)
+        {
+            queObjectPool.Enqueue(CreateObject(moveObjectPrefab));
+        }
+    }
+    private GameObject CreateObject(GameObject moveObject)
+    {
+        var ob = Instantiate(moveObject);
+        ob.transform.SetParent(transform);
+        ob.SetActive(false);
+        return ob;
+    }
+    private GameObject SetObjectPool(GameObject objec)
+    {
+        if(queObjectPool.Count > 0)
+        {
+            objec = queObjectPool.Dequeue();
+            objec.GetComponent<Obstacle>().moveSpeed = moveSpeed;
+            objec.transform.position = spawnPos.position;
+            objec.transform.eulerAngles = transform.eulerAngles;
+            objec.SetActive(true);
+        }
+        else
+        {
+            queObjectPool.Enqueue(CreateObject(objec));
+            objec.transform.SetParent(transform);
+        }
+        return objec;
+    }
+    private void GetObjectPool(GameObject objec)
+    {
+        objec.SetActive(false);
+        queObjectPool.Enqueue(objec);
+        listForward++;
+        if(listForward >= repeatOb.Count)
+        {
+            listForward = 0;
+        }
+    }
+
     private void RepeatObject()
     {
-        if (spawnTime > spawnDelay) { 
+        if (spawnTime > spawnDelay) 
+        { 
             spawnDelay += Time.deltaTime;
             if(roadType == RoadType.Rail)
                 OnTrain();
         }
         else
         {
-            SpawnMoveOb(repeatOb.gameObject);
+            repeatOb.Add(SetObjectPool(repeatOb[listCount].gameObject).transform);
+            listCount++;
+            if (listCount >= repeatOb.Count)
+                listCount = 0;
             spawnDelay = 0;
         }
     }
@@ -93,39 +150,40 @@ public class Road : MonoBehaviour, IDie
     }
     private void MoveObjectSpeed()
     {
+        repeatOb = new List<Transform>();
         //이걸 전부 길에 따른 자식들을 넣어주고 계속 생성되게 하기
-        if (moveObPrefab != null)
+        if (moveObjectPrefab != null)
         {
-            if (moveObPrefab.GetComponent<Car>())
+            if (moveObjectPrefab.GetComponent<Car>())
             {
+                InitQueObject(10);
                 roadType = RoadType.Road;
                 spawnTime = Random.Range(2f, 5.5f);
-                var ob = SpawnMoveOb(moveObPrefab).GetComponent<Car>();
+                var ob = SetObjectPool(moveObjectPrefab).GetComponent<Car>();
                 ob.randomMin = 2f; ob.randomMax = 8f;
-                ob.SpeedGet();
-                repeatOb = ob.transform;
-                moveObPrefab.gameObject.SetActive(true);
+                moveSpeed = ob.SpeedGet();
+                repeatOb.Add(ob.transform);
             }
-            else if (moveObPrefab.GetComponent<Log>())
+            else if (moveObjectPrefab.GetComponent<Log>())
             {
+                InitQueObject(10);
                 roadType = RoadType.River;
                 spawnTime = Random.Range(1f, 3f);
-                var ob = SpawnMoveOb(moveObPrefab).GetComponent<Log>();
+                var ob = SetObjectPool(moveObjectPrefab).GetComponent<Log>();
                 ob.randomMin = 1.5f; ob.randomMax = 4f;
-                ob.SpeedGet();
-                repeatOb = ob.transform;
-                moveObPrefab.gameObject.SetActive(true);
+                moveSpeed = ob.SpeedGet();
+                repeatOb.Add(ob.transform);
             }
-            else if (moveObPrefab.GetComponent<Train>())
+            else if (moveObjectPrefab.GetComponent<Train>())
             {
+                InitQueObject(1);
                 roadType = RoadType.Rail;
                 spawnTime = Random.Range(8f, 12f);
                 trainOn = spawnTime - 2f;
-                var ob = SpawnMoveOb(moveObPrefab).GetComponent<Train>();
+                var ob = SetObjectPool(moveObjectPrefab).GetComponent<Train>();
                 ob.randomMin = 25f; ob.randomMax = 31f;
-                ob.SpeedGet();
-                repeatOb = ob.transform;
-                moveObPrefab.gameObject.SetActive(true);
+                moveSpeed = ob.SpeedGet();
+                repeatOb.Add(ob.transform);
                 for (int i = 0; i < trainLight.Length; i++)
                 {
                     var lightOb = Instantiate(trainLight[i]);
@@ -142,15 +200,7 @@ public class Road : MonoBehaviour, IDie
         else
             return;
     }
-    private GameObject SpawnMoveOb(GameObject objec)
-    {
-        var ob = Instantiate(objec);
-        ob.SetActive(true);
-        ob.transform.position = spawnPos.position;
-        ob.transform.SetParent(transform);
-        ob.transform.eulerAngles = transform.eulerAngles;
-        return ob;
-    }
+ 
     public void Die(Transform player)
     {
         if (gameObject.layer == LayerMask.NameToLayer("Obstacle"))

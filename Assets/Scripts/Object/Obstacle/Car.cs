@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class Car : Obstacle, IDie
 {
-    CarData data;
     private void Update()
     {
         base.Move(SpeedGet());
-        base.DestroyObject(18f);
     }
     public void Die(Transform player)
     {

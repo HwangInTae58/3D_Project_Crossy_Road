@@ -134,8 +134,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7566081962814867587}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.37, z: 2}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  m_LocalPosition: {x: 0, y: -0.37, z: 13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8544977260813032268}
@@ -168,6 +168,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06412d5f4525124080f79acfd961be0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveObPrefab: {fileID: 6834382373416688929, guid: a036bed21b8301144a375823eda3214e,
+  moveObjectPrefab: {fileID: 6834382373416688929, guid: a036bed21b8301144a375823eda3214e,
     type: 3}
+  trainLight:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   spawnPos: {fileID: 2004072715948194105}

@@ -47,9 +47,9 @@ public class PlayerControl : MonoBehaviour
     }
     private void Start()
     {
-        RoadManager.instance.UpdateGetPlayerPos((int)transform.position.z);
         playerDic = new Dictionary<KeyCode, PlayerDic>();
         PlayerCheak();
+        RoadManager.instance.UpdateGetPlayerPos((int)transform.position.z);
     }
     private void Update()
     {
@@ -212,7 +212,7 @@ public class PlayerControl : MonoBehaviour
         center -= new Vector3(0, 0.4f, 0);
         Vector3 riseRelCenter = start - center;
         Vector3 setRelCenter = end - center;
-        transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, 0.05f);
+        transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, 0.1f);
         transform.position += center;
     }
 }

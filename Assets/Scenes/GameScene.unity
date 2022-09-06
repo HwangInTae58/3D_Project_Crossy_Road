@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1333,11 +1333,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9565f282436c1bc49a44861685b8bc9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roadPrefabs:
-  - {fileID: 2149956696365319536, guid: 1f045c45d492d484cae9411018fd39b9, type: 3}
-  - {fileID: 7566081962814867587, guid: 8edcf40f19a4297469bcaa4e73fe93cb, type: 3}
-  - {fileID: 1655996630884214407, guid: 7a60d154cffe81448b45e43c3d70d369, type: 3}
-  - {fileID: 8358466120883096709, guid: 21459d7391368cd46a471324f44e4716, type: 3}
+  grassPrefabs: {fileID: 2149956696365319536, guid: 1f045c45d492d484cae9411018fd39b9,
+    type: 3}
+  roadPrefabs: {fileID: 7566081962814867587, guid: 8edcf40f19a4297469bcaa4e73fe93cb,
+    type: 3}
+  riverPrefabs: {fileID: 1655996630884214407, guid: 7a60d154cffe81448b45e43c3d70d369,
+    type: 3}
+  railPrefabs: {fileID: 8358466120883096709, guid: 21459d7391368cd46a471324f44e4716,
+    type: 3}
   roadParent: {fileID: 662064762}
   roadMinPos: 0
   lastLinePos: 0
@@ -1600,6 +1603,61 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1971849610}
   m_CullTransparentMesh: 0
+--- !u!1 &2125490651
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2125490653}
+  - component: {fileID: 2125490652}
+  m_Layer: 0
+  m_Name: ObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2125490652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2125490651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fbe949b2ad0ca04cb6a3a3bc722d8e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab:
+  - {fileID: 2149956696365319536, guid: 1f045c45d492d484cae9411018fd39b9, type: 3}
+  - {fileID: 7566081962814867587, guid: 8edcf40f19a4297469bcaa4e73fe93cb, type: 3}
+  - {fileID: 1655996630884214407, guid: 7a60d154cffe81448b45e43c3d70d369, type: 3}
+  - {fileID: 8358466120883096709, guid: 21459d7391368cd46a471324f44e4716, type: 3}
+  - {fileID: 6834382373416688929, guid: a036bed21b8301144a375823eda3214e, type: 3}
+  - {fileID: 6410981609836450249, guid: 138995f7d0ac14c4bb8854617454c027, type: 3}
+  - {fileID: 6254924089904767260, guid: 4a768ed7a9f8c7d4483a83dbb5eec6ab, type: 3}
+  - {fileID: 3702285615618666121, guid: 6dc6442e27e9ac549bf464911f8b227d, type: 3}
+  - {fileID: 3307771377729372155, guid: 977d7ed7e8077fe4aa0c7188e7a00833, type: 3}
+  - {fileID: 4522738035679480266, guid: 3138c9ced921e654e80e3e670d2c2131, type: 3}
+  trans: {fileID: 2125490653}
+--- !u!4 &2125490653
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2125490651}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -24.961937, y: -146.29378, z: 119.07463}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &112537455860913254
 PrefabInstance:
   m_ObjectHideFlags: 0
