@@ -13,6 +13,8 @@ public class PlayerControl : MonoBehaviour
         Right,
     }
     public GameObject pig;
+   
+
     Dictionary<KeyCode, PlayerDic> playerDic;
     Transform logCompareObj;
     [SerializeField] Transform playerEye;
@@ -49,7 +51,6 @@ public class PlayerControl : MonoBehaviour
     {
         playerDic = new Dictionary<KeyCode, PlayerDic>();
         PlayerCheak();
-        RoadManager.instance.UpdateGetPlayerPos((int)transform.position.z);
     }
     private void Update()
     {
@@ -58,6 +59,7 @@ public class PlayerControl : MonoBehaviour
     }
    private void PlayerCheak()
     {
+        
         playerDic.Add(KeyCode.W, PlayerDic.UP);
         playerDic.Add(KeyCode.S, PlayerDic.Down);
         playerDic.Add(KeyCode.A, PlayerDic.Left);
@@ -72,7 +74,6 @@ public class PlayerControl : MonoBehaviour
                 if (Input.GetKeyDown(pdic.Key) && !moveCool)
                 {
                     InputMoveDir(pdic.Value);
-                    Debug.Log(pdic.Value);
                     DirCheak(pdic.Value);
                 }
             }

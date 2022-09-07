@@ -16,7 +16,6 @@ public class Road : MonoBehaviour, IDie
     Queue<GameObject> queObjectPool;
     public GameObject moveObjectPrefab;
     List<Transform> repeatOb;
-
     public GameObject[] trainLight = new GameObject[3];
     public Transform spawnPos;
     int listCount = 0;
@@ -29,7 +28,6 @@ public class Road : MonoBehaviour, IDie
     bool trinSpawn;
     private void Start()
     {
-        
         MoveObjectSpeed();
     }
     private void Update()
@@ -37,24 +35,22 @@ public class Road : MonoBehaviour, IDie
         if (repeatOb != null)
             RepeatObject();
         if(repeatOb[listForward].localPosition.x >= 20)
-        {
             GetObjectPool(repeatOb[listForward].gameObject);
-        }
     }
     private void InitQueObject(int count)
     {
-        queObjectPool = new Queue<GameObject>();
-        for (int i = 0; i < count; i++)
-        {
-            queObjectPool.Enqueue(CreateObject(moveObjectPrefab));
-        }
+    queObjectPool = new Queue<GameObject>();
+    for (int i = 0; i < count; i++)
+    {
+    queObjectPool.Enqueue(CreateObject(moveObjectPrefab));
+    }
     }
     private GameObject CreateObject(GameObject moveObject)
     {
-        var ob = Instantiate(moveObject);
-        ob.transform.SetParent(transform);
-        ob.SetActive(false);
-        return ob;
+    var ob = Instantiate(moveObject);
+    ob.transform.SetParent(transform);
+    ob.SetActive(false);
+    return ob;
     }
     private GameObject SetObjectPool(GameObject objec)
     {
@@ -79,11 +75,8 @@ public class Road : MonoBehaviour, IDie
         queObjectPool.Enqueue(objec);
         listForward++;
         if(listForward >= repeatOb.Count)
-        {
             listForward = 0;
-        }
     }
-
     private void RepeatObject()
     {
         if (spawnTime > spawnDelay) 
@@ -101,6 +94,7 @@ public class Road : MonoBehaviour, IDie
             spawnDelay = 0;
         }
     }
+    #region TrainLight
     private void OnTrain()
     {
         trainDelay = spawnDelay;
@@ -120,19 +114,22 @@ public class Road : MonoBehaviour, IDie
     {
         if (isTrain)
         {
-            if (trainLight[0].activeSelf)
+            if (trainLight[0].activeSelf) 
                 trainLight[0].SetActive(false);
-            if (!trainLight[1].activeSelf) { 
-                trainLight[1].SetActive(true);
-            if (trainLight[2].activeSelf)
-                trainLight[2].SetActive(false);
-                yield return new WaitForSeconds(0.4f);
-            }
-            if (trainLight[1].activeSelf)
+
+            if (!trainLight[1].activeSelf)
             {
+                trainLight[1].SetActive(true);
+                if (trainLight[2].activeSelf) { 
+                    trainLight[2].SetActive(false);
+                }
+                yield return new WaitForSeconds(0.2f);
+            }
+            if (trainLight[1].activeSelf) 
+                {
                 trainLight[2].SetActive(true);
                 trainLight[1].SetActive(false);
-                yield return new WaitForSeconds(0.4f);
+                yield return new WaitForSeconds(0.2f);
             }
         }
         else
@@ -141,13 +138,16 @@ public class Road : MonoBehaviour, IDie
             {
                 trainLight[0].SetActive(true);
             }
-            for (int i = 1; i < trainLight.Length; i++)
+            for (int j = 1; j < trainLight.Length; j++)
             {
-                if (trainLight[i].activeSelf)
-                    trainLight[i].SetActive(false);
+                if (trainLight[j].activeSelf)
+                {
+                    trainLight[j].SetActive(false);
+                }
             }
         }
     }
+    #endregion
     private void MoveObjectSpeed()
     {
         repeatOb = new List<Transform>();
@@ -168,7 +168,7 @@ public class Road : MonoBehaviour, IDie
             {
                 InitQueObject(10);
                 roadType = RoadType.River;
-                spawnTime = Random.Range(1f, 3f);
+                spawnTime = Random.Range(1.5f, 3f);
                 var ob = SetObjectPool(moveObjectPrefab).GetComponent<Log>();
                 ob.randomMin = 1.5f; ob.randomMax = 4f;
                 moveSpeed = ob.SpeedGet();
@@ -176,7 +176,7 @@ public class Road : MonoBehaviour, IDie
             }
             else if (moveObjectPrefab.GetComponent<Train>())
             {
-                InitQueObject(1);
+                InitQueObject(2);
                 roadType = RoadType.Rail;
                 spawnTime = Random.Range(8f, 12f);
                 trainOn = spawnTime - 2f;
@@ -184,17 +184,17 @@ public class Road : MonoBehaviour, IDie
                 ob.randomMin = 25f; ob.randomMax = 31f;
                 moveSpeed = ob.SpeedGet();
                 repeatOb.Add(ob.transform);
-                for (int i = 0; i < trainLight.Length; i++)
-                {
-                    var lightOb = Instantiate(trainLight[i]);
-                    trainLight[i] = lightOb;
-                    lightOb.transform.SetParent(transform);
-                    lightOb.transform.localPosition = new Vector3(-2, transform.position.y, 0.5f);
-                    lightOb.transform.rotation = Quaternion.Euler(0, 180, 0);
-                    trainLight[i].SetActive(false);
-                    if (!trainLight[0].activeSelf)
-                        trainLight[0].SetActive(true);
-                }
+                    for (int j = 0; j < trainLight.Length; j++)
+                    {
+                        var lightOb = Instantiate(trainLight[j]);
+                        trainLight[j] = lightOb;
+                        lightOb.transform.SetParent(transform);
+                        lightOb.transform.localPosition = new Vector3(0, transform.position.y, 0.5f);
+                        lightOb.transform.rotation = Quaternion.Euler(0, 180, 0);
+                        trainLight[j].SetActive(false);
+                        if (!trainLight[0].activeSelf)
+                            trainLight[0].SetActive(true);
+                    }
             }
         }
         else

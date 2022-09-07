@@ -11,16 +11,8 @@ public class RoadManager : MonoBehaviour
         Road2,
         None
     }
-    Queue<GameObject> queGrassRoad;
-    Queue<GameObject> queNormalRoad;
-    Queue<GameObject> queRiverRoad;
-    Queue<GameObject> queRailRoad;
-    public GameObject grassPrefabs;
-    public GameObject roadPrefabs;
-    public GameObject riverPrefabs;
-    public GameObject railPrefabs;
-
     private Dictionary<int, Transform> roadMapDic = new Dictionary<int, Transform>();
+    public GameObject[] roadCheck;
     RoadControl control;
     public Transform roadParent;
     public int roadMinPos;
@@ -38,7 +30,7 @@ public class RoadManager : MonoBehaviour
         }
         else
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
         roadMinPos = -8;
         roadMaxPos = 20;
@@ -50,8 +42,9 @@ public class RoadManager : MonoBehaviour
     {
         Vector3 offsetPos = roadParent.position;
         offsetPos.z = (float)playerPos;
-        int ranAngle = Random.Range(0, 2);
         GameObject ob = null;
+        int ranAngle = Random.Range(0, 2);
+        
         switch (num)
         {
             case 0:
@@ -59,11 +52,15 @@ public class RoadManager : MonoBehaviour
                 {
                     ob = ObjectPool.instance.prefabType[0].Dequeue();
                     ob.transform.position = offsetPos;
+                    if (ranAngle == 1)
+                        ob.transform.rotation = Quaternion.Euler(0, 180, 0);
+                    else if (ranAngle != 1)
+                        ob.transform.rotation = Quaternion.Euler(0, 0, 0);
                     ob.SetActive(true);
                 }
                 else
                 {
-                    ObjectPool.instance.ListAdd(0, grassPrefabs,1);
+                    ObjectPool.instance.prefabType[0] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[0],1);
                     SetObject(playerPos, 0);
                 }
             break;
@@ -72,11 +69,15 @@ public class RoadManager : MonoBehaviour
                 {
                     ob = ObjectPool.instance.prefabType[1].Dequeue();
                     ob.transform.position = offsetPos;
+                    if (ranAngle == 1)
+                        ob.transform.rotation = Quaternion.Euler(0, 180, 0);
+                    else if (ranAngle != 1)
+                        ob.transform.rotation = Quaternion.Euler(0, 0, 0);
                     ob.SetActive(true);
                 }
                 else
                 {
-                    ObjectPool.instance.ListAdd(1, roadPrefabs,1);
+                    ObjectPool.instance.prefabType[1] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[1],1);
                     SetObject(playerPos, 1);
                 }
                 break;
@@ -85,11 +86,15 @@ public class RoadManager : MonoBehaviour
                 {
                     ob = ObjectPool.instance.prefabType[2].Dequeue();
                     ob.transform.position = offsetPos;
+                    if (ranAngle == 1)
+                        ob.transform.rotation = Quaternion.Euler(0, 180, 0);
+                    else if (ranAngle != 1)
+                        ob.transform.rotation = Quaternion.Euler(0, 0, 0);
                     ob.SetActive(true);
                 }
                 else
                 {
-                    ObjectPool.instance.ListAdd(2, riverPrefabs,1);
+                    ObjectPool.instance.prefabType[2] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[2],1);
                     SetObject(playerPos, 2);
                 }
                 break;
@@ -98,27 +103,31 @@ public class RoadManager : MonoBehaviour
                 {
                     ob = ObjectPool.instance.prefabType[3].Dequeue();
                     ob.transform.position = offsetPos;
+                    if (ranAngle == 1)
+                        ob.transform.rotation = Quaternion.Euler(0, 180, 0);
+                    else if (ranAngle != 1)
+                        ob.transform.rotation = Quaternion.Euler(0, 0, 0);
                     ob.SetActive(true);
                 }
                 else
                 {
-                    ObjectPool.instance.ListAdd(3, railPrefabs,1);
+                    ObjectPool.instance.prefabType[3] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[3],1);
                     SetObject(playerPos, 3);
                 }
                 break;
         }
-        if(ob != null) { 
-        roadMapDic.Add(playerPos, ob.transform);
-        if (ranAngle == 1)
-            ob.transform.rotation = Quaternion.Euler(0, 180, 0);
+
+        if (ob != null) { 
+            roadMapDic.Add(playerPos, ob.transform);
         }
     }
-    private void RemoveRoad(int playerPos,int count)
+    private void RemoveRoad(int playerPos)
     {
         if (roadMapDic.ContainsKey(playerPos))
         {
             Transform roadTrans = roadMapDic[playerPos];
-            GetObject(roadTrans.gameObject, count);
+           
+            GetObject(roadTrans.gameObject);
             roadMapDic.Remove(playerPos);
         }
         else
@@ -126,16 +135,17 @@ public class RoadManager : MonoBehaviour
             Debug.Log("ERROR");
         }
     }
-    private void GetObject(GameObject objec, int count)
+    private void GetObject(GameObject objec)
     {
-        if(objec == grassPrefabs) 
-            ObjectPool.instance.ListAdd(0, objec, count);
-        if (objec == roadPrefabs)
-            ObjectPool.instance.ListAdd(1, objec, count);
-        if(objec == riverPrefabs)
-            ObjectPool.instance.ListAdd(2, objec, count);
-        if(objec == railPrefabs)
-            ObjectPool.instance.ListAdd(3, objec, count);
+        if (objec.name == "grassRoad(Clone)") 
+            ObjectPool.instance.prefabType[0].Enqueue(objec);
+        else if (objec.name == "Road(Clone)")
+            ObjectPool.instance.prefabType[1].Enqueue(objec);
+        else if (objec.name == "river(Clone)")
+            ObjectPool.instance.prefabType[2].Enqueue(objec);
+        else if (objec.name == "railRoad(Clone)")
+            ObjectPool.instance.prefabType[3].Enqueue(objec);
+        objec.SetActive(false);
     }
 
     public void UpdateGetPlayerPos(int playerPos)
@@ -207,7 +217,7 @@ public class RoadManager : MonoBehaviour
             int count = minPosZ + deleteRoad;
             for (int i = minPosZ; i < count; i++)
             {
-                RemoveRoad(i, count);
+                RemoveRoad(i);
             }
             minPosZ += deleteRoad;
         }

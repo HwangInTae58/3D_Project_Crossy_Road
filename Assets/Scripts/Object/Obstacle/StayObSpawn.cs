@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class StayObSpawn : MonoBehaviour
 {
-    Queue<GameObject> rockqueue;
-    Queue<GameObject> treequeue;
-    Queue<GameObject> otherTreequeue;
-    public GameObject  rockPrefab;
-    public GameObject  treePrefab;
-    public GameObject  otherTreeprefab;
     int prefabCount;
     int startMinVal;
     int startMaxVal;
     int spawnCreateRandom;
+    bool start;
+    Dictionary<Vector3, Transform> objectSave = new Dictionary<Vector3, Transform>();
     private void Awake()
     {
+        start = true;
         prefabCount = 3;
         startMinVal = -25;
         startMaxVal = 25;
@@ -23,76 +20,99 @@ public class StayObSpawn : MonoBehaviour
     }
     private void Start()
     {
-        InitQueue(10);
-        SpawnObject();
-    }
-    private void SpawnObject()
-    {
         RandomSpawn();
+        start = false;
     }
-    private void InitQueue(int count)
+    private void OnEnable()
     {
-        rockqueue = new Queue<GameObject>();
-        treequeue = new Queue<GameObject>();
-        otherTreequeue = new Queue<GameObject>();
-        for (int i = 0; i < count; i++)
-        {
-            rockqueue.Enqueue(CreateObject(rockPrefab));
-            treequeue.Enqueue(CreateObject(treePrefab));
-            otherTreequeue.Enqueue(CreateObject(otherTreeprefab));
-        }
-    }
-    private GameObject CreateObject(GameObject stayObject)
-    {
-        var ob = Instantiate(stayObject);
-        ob.transform.SetParent(transform);
-        ob.SetActive(false);
-        return ob;
+        if (start)
+            return;
+
+        RandomSpawn();
     }
     private void SetObject(int num, Vector3 pos)
     {
+        GameObject ob = null;
         switch (num) 
         {
             case 0:
-            if (rockqueue.Count > 0)
+            if (ObjectPool.instance.prefabType[7].Count > 0)
             {
-                var ob = rockqueue.Dequeue();
-                ob.transform.localPosition = pos;
+                ob = ObjectPool.instance.prefabType[7].Dequeue();
+                ob.transform.position = pos;
                 ob.SetActive(true);
+                  
             }
             else
             {
-                rockqueue.Enqueue(CreateObject(rockPrefab));
+                ObjectPool.instance.prefabType[7] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[7], 1);
                 SetObject(0, pos);
             }
             break;
              case 1:
-            if (treequeue.Count > 0)
+            if (ObjectPool.instance.prefabType[8].Count > 0)
             {
-                var ob = treequeue.Dequeue();
-                ob.transform.localPosition = pos;
+                ob = ObjectPool.instance.prefabType[8].Dequeue();
+                ob.transform.position = pos;
                 ob.SetActive(true);
             }
             else
             {
-                treequeue.Enqueue(CreateObject(treePrefab));
+                ObjectPool.instance.prefabType[8] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[8], 1);
                 SetObject(1, pos);
             }
             break;
              case 2:
-            if (otherTreequeue.Count > 0)
+            if (ObjectPool.instance.prefabType[9].Count > 0)
             {
-                var ob = otherTreequeue.Dequeue();
-                ob.transform.localPosition = pos;
+                ob = ObjectPool.instance.prefabType[9].Dequeue();
+                ob.transform.position = pos;
                 ob.SetActive(true);
             }
             else
             {
-                otherTreequeue.Enqueue(CreateObject(otherTreeprefab));
+                ObjectPool.instance.prefabType[9] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[9], 1);
                 SetObject(2, pos);
             }
             break;
         }
+       
+        if(ob != null) {
+            objectSave.Add(pos, ob.transform);
+        }
+    }
+    private void OnDisable()
+    {
+        RemoveObject();
+    }
+    private void RemoveObject()
+    {
+        for (int i = startMinVal; i < startMaxVal; i++)
+        {
+            Vector3 offset = new Vector3(i, 0, transform.position.z);
+            if (objectSave.ContainsKey(offset))
+            {
+                Transform stayOb = objectSave[offset];
+                if(stayOb != null) { 
+                    GetObject(stayOb.gameObject);
+                    objectSave.Remove(offset);
+                }
+            }
+            else
+            {
+                continue;
+            }
+        }
+    }
+    private void GetObject(GameObject objec)
+    {
+        if (objec.name == "Rock(Clone)") 
+            ObjectPool.instance.prefabType[7].Enqueue(objec);
+        else if (objec.name == "Tree1(Clone)") 
+            ObjectPool.instance.prefabType[8].Enqueue(objec);
+        else if (objec.name == "Tree2(Clone)")
+            ObjectPool.instance.prefabType[9].Enqueue(objec);
+        objec.SetActive(false);
     }
     private void RandomSpawn()
     {
@@ -106,13 +126,13 @@ public class StayObSpawn : MonoBehaviour
             randomIndex = Random.Range(0, prefabCount);//참이면 소환물을 랜덤으로 정한 후
             if (Mathf.Abs(i)>= 9 && Mathf.Abs(i) < 25)
             {
-                offsetPos.Set(i, 0.37f, 0f);
+                offsetPos.Set(i, 0, transform.position.z);
                 SetObject(randomIndex, offsetPos);//소환
             }
             else if (randomVal < spawnCreateRandom && Mathf.Abs(i) < 9)//랜덤으로 비교하여
             {
-                offsetPos.Set(i, 0.37f, 0f);
-                SetObject(i, offsetPos);//소환
+                offsetPos.Set(i, 0, transform.position.z);
+                SetObject(randomIndex, offsetPos);//소환
             }
         }
     }
