@@ -36,42 +36,42 @@ public class StayObSpawn : MonoBehaviour
         switch (num) 
         {
             case 0:
-            if (ObjectPool.instance.prefabType[7].Count > 0)
+            if (ObjectPool.instance.prefabType[4].Count > 0)
             {
-                ob = ObjectPool.instance.prefabType[7].Dequeue();
+                ob = ObjectPool.instance.prefabType[4].Dequeue();
                 ob.transform.position = pos;
                 ob.SetActive(true);
                   
             }
             else
             {
-                ObjectPool.instance.prefabType[7] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[7], 1);
+                ObjectPool.instance.prefabType[4] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[4], 1);
                 SetObject(0, pos);
             }
             break;
              case 1:
-            if (ObjectPool.instance.prefabType[8].Count > 0)
+            if (ObjectPool.instance.prefabType[5].Count > 0)
             {
-                ob = ObjectPool.instance.prefabType[8].Dequeue();
+                ob = ObjectPool.instance.prefabType[5].Dequeue();
                 ob.transform.position = pos;
                 ob.SetActive(true);
             }
             else
             {
-                ObjectPool.instance.prefabType[8] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[8], 1);
+                ObjectPool.instance.prefabType[5] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[5], 1);
                 SetObject(1, pos);
             }
             break;
              case 2:
-            if (ObjectPool.instance.prefabType[9].Count > 0)
+            if (ObjectPool.instance.prefabType[6].Count > 0)
             {
-                ob = ObjectPool.instance.prefabType[9].Dequeue();
+                ob = ObjectPool.instance.prefabType[6].Dequeue();
                 ob.transform.position = pos;
                 ob.SetActive(true);
             }
             else
             {
-                ObjectPool.instance.prefabType[9] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[9], 1);
+                ObjectPool.instance.prefabType[6] = ObjectPool.instance.InitQueue(ObjectPool.instance.prefab[6], 1);
                 SetObject(2, pos);
             }
             break;
@@ -107,11 +107,11 @@ public class StayObSpawn : MonoBehaviour
     private void GetObject(GameObject objec)
     {
         if (objec.name == "Rock(Clone)") 
-            ObjectPool.instance.prefabType[7].Enqueue(objec);
+            ObjectPool.instance.prefabType[4].Enqueue(objec);
         else if (objec.name == "Tree1(Clone)") 
-            ObjectPool.instance.prefabType[8].Enqueue(objec);
+            ObjectPool.instance.prefabType[5].Enqueue(objec);
         else if (objec.name == "Tree2(Clone)")
-            ObjectPool.instance.prefabType[9].Enqueue(objec);
+            ObjectPool.instance.prefabType[6].Enqueue(objec);
         objec.SetActive(false);
     }
     private void RandomSpawn()
